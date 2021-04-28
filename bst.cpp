@@ -1,8 +1,11 @@
 #include <iostream>
 #include <iterator>
-#include <algorithm>
 #include <utility>
-#include <stack>
+
+//note only to "easy to use" members of nodes
+
+#define KEY KV.first
+#define VAL KV.second
 
 #define ENDL std::endl;
 
@@ -11,31 +14,49 @@ class bst
 {   
     public:
     OP op;
+    
 
     struct node
     {
-        
-        Vtype value;
-        Ktype key;
+        /*
+        * struct node that contains a pair - Key value
+        * pointer to left, right and parent nodes
+        * constructors defined       
+        */
+        std::pair<Ktype,Vtype> KV;
         node* LEFT_child;
         node* RIGHT_child;
         node* parent;
         
-        node(Vtype v, Ktype k) : key(k), value(v) {
+        node(const Ktype k, const Vtype v){
+            KV.first = k;
+            KV.second = v;
             this->LEFT_child = nullptr;
             this->RIGHT_child = nullptr;
             this->parent = nullptr;
         };
-        ~node(){
-            if (LEFT_child != nullptr) delete(LEFT_child);
-            if (RIGHT_child != nullptr) delete(RIGHT_child);
-            std::cout << "invoking destructor on node w key:" << key << std::endl;
-        }
+
+        node(const std::pair<Ktype,Vtype> KV_init){
+            KV = KV.init;
+            this->LEFT_child = nullptr;
+            this->RIGHT_child = nullptr;
+            this->parent = nullptr;
+        };
         node(const node &node_to_copy_from) {
-            
             LEFT_child = node_to_copy_from.LEFT_child;
             RIGHT_child = node_to_copy_from.RIGHT_child;
+            KV = node_to_copy_from.KV;
         }
+        node& operator=(const node& node_to_copy_from){
+            return *(new node(node_to_copy_from));
+            }
+
+
+        ~node(){
+            
+           // std::cout << "invoking destructor on node w key:" << KEY << std::endl;
+        }
+        
     };
 
     struct Iterator{
@@ -88,7 +109,7 @@ class bst
             else{
                 
                 aux_node_pointer = aux_node_pointer -> parent;
-                while(op(aux_node_pointer -> key, current -> key) ){
+                while(op(aux_node_pointer -> KEY, current -> KEY) ){
                     aux_node_pointer = aux_node_pointer -> parent;
                     if (aux_node_pointer == nullptr){ return nullptr;}
                 }
@@ -98,8 +119,9 @@ class bst
             }
         
     };
-    
     node* root;
+    
+    
     
     Iterator begin(){
         node* aux_node_pointer{root -> LEFT_child};
@@ -114,16 +136,49 @@ class bst
         return Iterator(nullptr);
     }
 
-    //constructor for building bst starting from a node 
-    bst(node* root_node){
-        this->root = root_node;
-    }
     //constructor for empty bst
     bst(){};
-
-    ~bst(){
-        delete(root);
+    bst(node* new_node){
+        root = new_node;
     };
+
+    //copy constructor
+    
+    bst(const bst& bst_to_copy_from){
+        root = copy_all_nodes(bst_to_copy_from.root);
+    }
+
+    //copy assignment
+    bst& operator=(const bst& bst_to_copy_from){
+            return *(new bst(bst_to_copy_from));
+            }
+
+
+    //recursively delete all the nodes
+    ~bst(){
+        delete_all_nodes(root);
+    };
+
+    void delete_all_nodes(node* current_node){
+        if (current_node -> LEFT_child != nullptr) delete_all_nodes(current_node -> LEFT_child );
+        if (current_node -> RIGHT_child != nullptr) delete_all_nodes(current_node -> RIGHT_child);
+        delete(current_node);
+    }
+
+    node* copy_all_nodes(node* current_node){
+        auto copied_node = new node(*current_node);
+        if (current_node -> LEFT_child != nullptr) copied_node -> LEFT_child = copy_all_nodes(current_node -> LEFT_child);
+        if (current_node -> RIGHT_child != nullptr) copied_node -> RIGHT_child = copy_all_nodes(current_node -> RIGHT_child);
+        return copied_node;
+    }
+
+    void print(){
+        for(auto n = begin(); n != end(); ++n){
+            std::cout << n -> KEY << "  " << n -> VAL << std::endl;
+        }
+
+    }
+
     class IT{};
     
 };
@@ -131,15 +186,15 @@ class bst
 
 
 int main(int argc, char** argv){
-    auto n8 = new bst<int,int>::node(0,8);
-    auto n3 = new bst<int,int>::node(0,3);
-    auto n1 = new bst<int,int>::node(0,1);
-    auto n6 = new bst<int,int>::node(0,6);
-    auto n4 = new bst<int,int>::node(0,4);
-    auto n7 = new bst<int,int>::node(0,7);
-    auto n10 = new bst<int,int>::node(0,10);
-    auto n14 = new bst<int,int>::node(0,14);
-    auto n13 = new bst<int,int>::node(0,13);
+    auto n8 = new bst<int,int>::node(8,0);
+    auto n3 = new bst<int,int>::node(3,0);
+    auto n1 = new bst<int,int>::node(1,0);
+    auto n6 = new bst<int,int>::node(6,0);
+    auto n4 = new bst<int,int>::node(4,0);
+    auto n7 = new bst<int,int>::node(7,0);
+    auto n10 = new bst<int,int>::node(10,0);
+    auto n14 = new bst<int,int>::node(14,0);
+    auto n13 = new bst<int,int>::node(13,0);
 
     n8 -> LEFT_child = n3; 
     n3 -> parent = n8;
@@ -162,14 +217,15 @@ int main(int argc, char** argv){
     n14 -> LEFT_child = n13;
     n13 -> parent = n14;
 
-    auto bb = *(new bst<int,int>(n8));
-    auto gg = bb.begin();
+    auto bb = new bst<int,int>(n8) ;
+    auto bb2 = bb;
+    //bb -> root = n8;
+   // auto gg = bb.begin();
+   
     
-    for(gg; gg != bb.end(); ++gg){
-        
-        std::cout << gg -> key << std::endl;
-        
-    }
+    bb -> print();
+    bb2 -> print();
+
 
     return 0;
 }
