@@ -47,7 +47,7 @@ class bst
         using pointer = value_type*;
 
         pointer current;
-
+        
         OP op;
         reference operator*(){ return  *current;}
         pointer operator->(){ return &**this;}
@@ -68,17 +68,6 @@ class bst
             pointer aux_node_pointer = current;
             // std::cout << current -> RIGHT_child << std::endl;
 
-            /*
-            * This part is a little bit difficult to explain
-            * The idea is that starting from a general node its successor will be on the right
-            * This opens 2 cases: 
-            *     i) The successor is the "Left-most" node on the right branch, first case of the if
-            *     ii) The successor is one of the nodes in the "parenthood" case 2 of the if
-            * In the second case we have to check if node.key > node.parent, eventually we will 
-            * reach the root, if even up to the root this condition is fullfilled then we have the last node
-            * of the sequence ("the right-most") so we will return as his successor nullptr
-            * 
-            */
             if(current -> RIGHT_child != nullptr){
                 aux_node_pointer = current -> RIGHT_child;
                 while(aux_node_pointer -> LEFT_child != nullptr )
@@ -100,26 +89,22 @@ class bst
     };
     
     node* root;
-    
+    bst(){};
+
     Iterator begin(){
         node* aux_node_pointer{root -> LEFT_child};
-        //go left until reach end
         while (aux_node_pointer -> LEFT_child != nullptr){
             aux_node_pointer = aux_node_pointer -> LEFT_child;
         }
         return Iterator(aux_node_pointer);
     }
     Iterator end(){
-        //one past the last element is a null pointer
         return Iterator(nullptr);
     }
 
-    //constructor for building bst starting from a node 
     bst(node* root_node){
         this->root = root_node;
     }
-    //constructor for empty bst
-    bst(){};
 
     ~bst(){
         delete(root);
