@@ -15,113 +15,16 @@ class bst
     public:
     OP op;
     
-
-    struct node
-    {
-        /*
-        * struct node that contains a pair - Key value
-        * pointer to left, right and parent nodes
-        * constructors defined       
-        */
-        std::pair<Ktype,Vtype> KV;
-        node* LEFT_child;
-        node* RIGHT_child;
-        node* parent;
-        
-        node(const Ktype k, const Vtype v){
-            KV.first = k;
-            KV.second = v;
-            this->LEFT_child = nullptr;
-            this->RIGHT_child = nullptr;
-            this->parent = nullptr;
-        };
-
-        node(const std::pair<Ktype,Vtype> KV_init){
-            KV = KV.init;
-            this->LEFT_child = nullptr;
-            this->RIGHT_child = nullptr;
-            this->parent = nullptr;
-        };
-        node(const node &node_to_copy_from) {
-            LEFT_child = node_to_copy_from.LEFT_child;
-            RIGHT_child = node_to_copy_from.RIGHT_child;
-            KV = node_to_copy_from.KV;
-        }
-        node& operator=(const node& node_to_copy_from){
-            return *(new node(node_to_copy_from));
-            }
-
-
-        ~node(){
-            
-           // std::cout << "invoking destructor on node w key:" << KEY << std::endl;
-        }
-        
-    };
-
-    struct Iterator{
-        using operator_type = OP;
-        using value_type = node;
-        using difference_type = std::ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using reference = value_type&;
-        using pointer = value_type*;
-
-        pointer current;
-
-        OP op;
-        reference operator*(){ return  *current;}
-        pointer operator->(){ return &**this;}
-
-        Iterator(pointer init){
-            current = init;
-        }
-
-        Iterator& operator++(){
-            current = next();
-            return *this;
-        }
-
-        friend bool operator== (const Iterator& a, const Iterator& b) { return a.current == b.current; };
-        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.current != b.current; };  
-        
-        pointer next(){
-            pointer aux_node_pointer = current;
-            // std::cout << current -> RIGHT_child << std::endl;
-
-            /*
-            * This part is a little bit difficult to explain
-            * The idea is that starting from a general node its successor will be on the right
-            * This opens 2 cases: 
-            *     i) The successor is the "Left-most" node on the right branch, first case of the if
-            *     ii) The successor is one of the nodes in the "parenthood" case 2 of the if
-            * In the second case we have to check if node.key > node.parent, eventually we will 
-            * reach the root, if even up to the root this condition is fullfilled then we have the last node
-            * of the sequence ("the right-most") so we will return as his successor nullptr
-            * 
-            */
-            if(current -> RIGHT_child != nullptr){
-                aux_node_pointer = current -> RIGHT_child;
-                while(aux_node_pointer -> LEFT_child != nullptr )
-                     aux_node_pointer = aux_node_pointer -> LEFT_child;
-                return aux_node_pointer;
-            }
-            else{
-                
-                aux_node_pointer = aux_node_pointer -> parent;
-                while(op(aux_node_pointer -> KEY, current -> KEY) ){
-                    aux_node_pointer = aux_node_pointer -> parent;
-                    if (aux_node_pointer == nullptr){ return nullptr;}
-                }
-                return aux_node_pointer;
-            }
-            
-            }
-        
-    };
+    //node fwd declaration
+    struct node;
+    
+    //iterator fwd declaration
+    struct Iterator;
+    
     node* root;
     
     
+    //begin and end iterators
     
     Iterator begin(){
         node* aux_node_pointer{root -> LEFT_child};
@@ -179,9 +82,113 @@ class bst
 
     }
 
-    class IT{};
-    
 };
+
+template <typename Vtype, typename Ktype, typename OP >
+struct bst<Vtype,Ktype,OP>::node
+    {
+        /*
+        * struct node that contains a pair - Key value
+        * pointer to left, right and parent nodes
+        * constructors defined       
+        */
+        std::pair<Ktype,Vtype> KV;
+        node* LEFT_child;
+        node* RIGHT_child;
+        node* parent;
+        
+        node(const Ktype k, const Vtype v){
+            KV.first = k;
+            KV.second = v;
+            this->LEFT_child = nullptr;
+            this->RIGHT_child = nullptr;
+            this->parent = nullptr;
+        };
+
+        node(const std::pair<Ktype,Vtype> KV_init){
+            KV = KV.init;
+            this->LEFT_child = nullptr;
+            this->RIGHT_child = nullptr;
+            this->parent = nullptr;
+        };
+        node(const node &node_to_copy_from) {
+            LEFT_child = node_to_copy_from.LEFT_child;
+            RIGHT_child = node_to_copy_from.RIGHT_child;
+            KV = node_to_copy_from.KV;
+        }
+        node& operator=(const node& node_to_copy_from){
+            return *(new node(node_to_copy_from));
+            }
+
+
+        ~node(){
+            
+           // std::cout << "invoking destructor on node w key:" << KEY << std::endl;
+        }
+        
+    };
+
+template <typename Vtype, typename Ktype, typename OP >
+struct bst<Vtype,Ktype,OP>::Iterator{
+        using operator_type = OP;
+        using value_type = bst<Vtype,Ktype,OP>::node;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::forward_iterator_tag;
+        using reference = value_type&;
+        using pointer = value_type*;
+
+        pointer current;
+
+        OP op;
+        reference operator*(){ return  *current;}
+        pointer operator->(){ return &**this;}
+
+        Iterator(pointer init){
+            current = init;
+        }
+
+        Iterator& operator++(){
+            current = next();
+            return *this;
+        }
+
+        friend bool operator== (const Iterator& a, const Iterator& b) { return a.current == b.current; };
+        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.current != b.current; };  
+        
+        pointer next(){
+            pointer aux_node_pointer = current;
+            // std::cout << current -> RIGHT_child << std::endl;
+
+            /*
+            * This part is a little bit difficult to explain
+            * The idea is that starting from a general node its successor will be on the right
+            * This opens 2 cases: 
+            *     i) The successor is the "Left-most" node on the right branch, first case of the if
+            *     ii) The successor is one of the nodes in the "parenthood" case 2 of the if
+            * In the second case we have to check if node.key > node.parent, eventually we will 
+            * reach the root, if even up to the root this condition is fullfilled then we have the last node
+            * of the sequence ("the right-most") so we will return as his successor nullptr
+            * 
+            */
+            if(current -> RIGHT_child != nullptr){
+                aux_node_pointer = current -> RIGHT_child;
+                while(aux_node_pointer -> LEFT_child != nullptr )
+                     aux_node_pointer = aux_node_pointer -> LEFT_child;
+                return aux_node_pointer;
+            }
+            else{
+                
+                aux_node_pointer = aux_node_pointer -> parent;
+                while(op(aux_node_pointer -> KEY, current -> KEY) ){
+                    aux_node_pointer = aux_node_pointer -> parent;
+                    if (aux_node_pointer == nullptr){ return nullptr;}
+                }
+                return aux_node_pointer;
+            }
+            
+            }
+        
+    };
 
 
 
