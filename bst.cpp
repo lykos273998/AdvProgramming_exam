@@ -19,25 +19,56 @@ class bst
     struct node;
     
     //iterator fwd declaration
-    struct Iterator;
-    
+    struct iterator;
+    struct const_iterator;
     node* root;
     
     
     //begin and end iterators
-    
-    Iterator begin(){
+    iterator begin() {
         node* aux_node_pointer{root -> LEFT_child};
         //go left until reach end
         while (aux_node_pointer -> LEFT_child != nullptr){
             aux_node_pointer = aux_node_pointer -> LEFT_child;
         }
-        return Iterator(aux_node_pointer);
+        return iterator(aux_node_pointer);
     }
-    Iterator end(){
+
+    const_iterator begin() const{
+        node* aux_node_pointer{root -> LEFT_child};
+        //go left until reach end
+        while (aux_node_pointer -> LEFT_child != nullptr){
+            aux_node_pointer = aux_node_pointer -> LEFT_child;
+        }
+        return const_iterator(aux_node_pointer);
+    }
+    
+    const_iterator cbegin() const{
+        node* aux_node_pointer{root -> LEFT_child};
+        //go left until reach end
+        while (aux_node_pointer -> LEFT_child != nullptr){
+            aux_node_pointer = aux_node_pointer -> LEFT_child;
+        }
+        return const_iterator(aux_node_pointer);
+    }
+
+    iterator end() {
         //one past the last element is a null pointer
-        return Iterator(nullptr);
+        return iterator(nullptr);
     }
+
+    const_iterator end() const{
+        //one past the last element is a null pointer
+        return const_iterator(nullptr);
+    }
+
+    const_iterator cend() const{
+        //one past the last element is a null pointer
+        return const_iterator(nullptr);
+    }
+
+   
+
 
     //constructor for empty bst
     bst(){};
@@ -62,6 +93,8 @@ class bst
         delete_all_nodes(root);
     };
 
+    //aux function to copy and delete nodes
+    //exploit recursion
     void delete_all_nodes(node* current_node){
         if (current_node -> LEFT_child != nullptr) delete_all_nodes(current_node -> LEFT_child );
         if (current_node -> RIGHT_child != nullptr) delete_all_nodes(current_node -> RIGHT_child);
@@ -82,8 +115,19 @@ class bst
 
     }
 
+    friend
+    std::ostream& operator<<(std::ostream& os, const bst& x){
+        for(auto n : x)
+        {
+            os << n.KV.first << "  " << n.KV.second << "\n";
+        }
+        os << std::endl;
+        return os;
+    };
+
 };
 
+//node implementation
 template <typename Vtype, typename Ktype, typename OP >
 struct bst<Vtype,Ktype,OP>::node
     {
@@ -128,9 +172,11 @@ struct bst<Vtype,Ktype,OP>::node
         
     };
 
+//iterator implementation
 template <typename Vtype, typename Ktype, typename OP >
-struct bst<Vtype,Ktype,OP>::Iterator{
-        using operator_type = OP;
+struct bst<Vtype,Ktype,OP>::iterator{
+        
+
         using value_type = bst<Vtype,Ktype,OP>::node;
         using difference_type = std::ptrdiff_t;
         using iterator_category = std::forward_iterator_tag;
@@ -143,17 +189,17 @@ struct bst<Vtype,Ktype,OP>::Iterator{
         reference operator*(){ return  *current;}
         pointer operator->(){ return &**this;}
 
-        Iterator(pointer init){
+        iterator(pointer init){
             current = init;
         }
 
-        Iterator& operator++(){
+        iterator& operator++(){
             current = next();
             return *this;
         }
 
-        friend bool operator== (const Iterator& a, const Iterator& b) { return a.current == b.current; };
-        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.current != b.current; };  
+        friend bool operator== (const iterator& a, const iterator& b) { return a.current == b.current; };
+        friend bool operator!= (const iterator& a, const iterator& b) { return a.current != b.current; };  
         
         pointer next(){
             pointer aux_node_pointer = current;
@@ -190,6 +236,67 @@ struct bst<Vtype,Ktype,OP>::Iterator{
         
     };
 
+//const iterator
+template <typename Vtype, typename Ktype, typename OP >
+struct bst<Vtype,Ktype,OP>::const_iterator{
+        
+
+        using value_type = bst<Vtype,Ktype,OP>::node;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::forward_iterator_tag;
+        using reference = const value_type&;
+        using pointer = const value_type*;
+
+        pointer current;
+
+        OP op;
+        reference operator*(){ return  *current;}
+        pointer operator->(){ return &**this;}
+
+        const_iterator(pointer init) : current(init) {}
+
+        const_iterator& operator++(){
+            current = next();
+            return *this;
+        }
+
+        friend bool operator== (const const_iterator& a, const const_iterator& b) { return a.current == b.current; };
+        friend bool operator!= (const const_iterator& a, const const_iterator& b) { return a.current != b.current; };  
+        
+        pointer next(){
+            pointer aux_node_pointer = current;
+            // std::cout << current -> RIGHT_child << std::endl;
+
+            /*
+            * This part is a little bit difficult to explain
+            * The idea is that starting from a general node its successor will be on the right
+            * This opens 2 cases: 
+            *     i) The successor is the "Left-most" node on the right branch, first case of the if
+            *     ii) The successor is one of the nodes in the "parenthood" case 2 of the if
+            * In the second case we have to check if node.key > node.parent, eventually we will 
+            * reach the root, if even up to the root this condition is fullfilled then we have the last node
+            * of the sequence ("the right-most") so we will return as his successor nullptr
+            * 
+            */
+            if(current -> RIGHT_child != nullptr){
+                aux_node_pointer = current -> RIGHT_child;
+                while(aux_node_pointer -> LEFT_child != nullptr )
+                     aux_node_pointer = aux_node_pointer -> LEFT_child;
+                return aux_node_pointer;
+            }
+            else{
+                
+                aux_node_pointer = aux_node_pointer -> parent;
+                while(op(aux_node_pointer -> KEY, current -> KEY) ){
+                    aux_node_pointer = aux_node_pointer -> parent;
+                    if (aux_node_pointer == nullptr){ return nullptr;}
+                }
+                return aux_node_pointer;
+            }
+            
+            }
+        
+    };
 
 
 int main(int argc, char** argv){
@@ -229,9 +336,9 @@ int main(int argc, char** argv){
     //bb -> root = n8;
    // auto gg = bb.begin();
    
-    bb -> print();
-    bb2 -> print();
-    
+    //bb -> print();
+    // bb2 -> print();
+    std::cout << *bb << std::endl;
     //ffff
     //fffff
     return 0;
