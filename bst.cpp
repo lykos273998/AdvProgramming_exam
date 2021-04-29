@@ -103,8 +103,15 @@ class bst
 
     node* copy_all_nodes(node* current_node){
         auto copied_node = new node(*current_node);
-        if (current_node -> LEFT_child != nullptr) copied_node -> LEFT_child = copy_all_nodes(current_node -> LEFT_child);
-        if (current_node -> RIGHT_child != nullptr) copied_node -> RIGHT_child = copy_all_nodes(current_node -> RIGHT_child);
+        if (current_node -> LEFT_child != nullptr) { 
+            //copy recursively child
+            copied_node -> LEFT_child = copy_all_nodes(current_node -> LEFT_child);
+            //set recursively the parenthood
+            copied_node -> LEFT_child -> parent = copied_node;
+            }
+        if (current_node -> RIGHT_child != nullptr){
+            copied_node -> RIGHT_child = copy_all_nodes(current_node -> RIGHT_child);
+            copied_node -> RIGHT_child -> parent = copied_node;}
         return copied_node;
     }
 
@@ -124,6 +131,14 @@ class bst
         os << std::endl;
         return os;
     };
+
+    void print_extended(){
+        std::cout << "BEGIN OF THE TREE" << std::endl;
+        for(auto n = begin(); n != end(); ++n){
+            n -> _print_extended();
+        }
+        std::cout << "--- END ---" << std::endl;
+    }   
 
 };
 
@@ -156,14 +171,17 @@ struct bst<Vtype,Ktype,OP>::node
             this->parent = nullptr;
         };
         node(const node &node_to_copy_from) {
-            LEFT_child = node_to_copy_from.LEFT_child;
-            RIGHT_child = node_to_copy_from.RIGHT_child;
+            LEFT_child = nullptr;
+            RIGHT_child = nullptr;
+            parent = nullptr;
             KV = node_to_copy_from.KV;
         }
         node& operator=(const node& node_to_copy_from){
             return *(new node(node_to_copy_from));
             }
-
+        void _print_extended(){
+            std::cout << "Node " << this << "\tLCH " << LEFT_child << "\tRCH " << RIGHT_child << "\tKV " << KEY << "  " << VAL << std::endl;
+        }
 
         ~node(){
             
@@ -332,13 +350,24 @@ int main(int argc, char** argv){
     n13 -> parent = n14;
 
     auto bb = new bst<int,int>(n8) ;
-    auto bb2 = bb;
+
+
+    auto bb2 = *bb;
+    auto n_copy = new bst<int,int>::node(*n8);
+
+    //delete bb;
     //bb -> root = n8;
    // auto gg = bb.begin();
    
     //bb -> print();
     // bb2 -> print();
-    std::cout << *bb << std::endl;
+    //std::cout << bb2.root -> KV.first << std::endl;
+    //std::cout << bb2 << std::endl;
+    //std::cout << *bb  << std::endl;
+
+    bb2.print_extended();
+    bb ->print_extended();
+
     //ffff
     //fffff
     return 0;
