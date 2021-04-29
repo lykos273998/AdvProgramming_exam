@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iterator>
 #include <utility>
+#include <memory>
 
 //note only to "easy to use" members of nodes
 
@@ -349,10 +350,10 @@ int main(int argc, char** argv){
     n14 -> LEFT_child = n13;
     n13 -> parent = n14;
 
-    auto bb = new bst<int,int>(n8) ;
+    auto bb = bst<int,int>(n8) ;
 
 
-    auto bb2 = *bb;
+    auto bb2 = bb;
     auto n_copy = new bst<int,int>::node(*n8);
 
     //delete bb;
@@ -366,7 +367,7 @@ int main(int argc, char** argv){
     //std::cout << *bb  << std::endl;
 
     bb2.print_extended();
-    bb ->print_extended();
+    bb.print_extended();
 
     //ffff
     //fffff
