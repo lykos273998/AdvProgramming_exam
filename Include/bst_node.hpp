@@ -16,20 +16,21 @@ struct node
         * pointer to left, right and parent nodes
         * constructors defined       
         */
-        std::pair<KEY_type,VAL_type> KV;
+        using pair = std::pair<KEY_type,VAL_type>;
+        pair KV;
         std::unique_ptr<node> LEFT_child;
         std::unique_ptr<node> RIGHT_child;
         node* parent;
         
-        node(const std::pair<KEY_type,VAL_type> KV_init){
+        node(const pair KV_init){
             KV = KV_init;
-            this->LEFT_child = nullptr;
-            this->RIGHT_child = nullptr;
+            this->LEFT_child.reset(nullptr);
+            this->RIGHT_child.reset(nullptr);
             this->parent = nullptr;
         };
         node(const node &node_to_copy_from) {
-            LEFT_child = nullptr;
-            RIGHT_child = nullptr;
+            this->LEFT_child.reset(nullptr);
+            this->RIGHT_child.reset(nullptr);
             parent = nullptr;
             KV = node_to_copy_from.KV;
         }
@@ -41,9 +42,41 @@ struct node
             std::cout << "Node " << this << "\tLCH " << LEFT_child << "\tRCH " << RIGHT_child << "\tKV " << KEY << "  " << VAL << std::endl;
         }
 
-        ~node(){
-            
-           // std::cout << "invoking destructor on node w key:" << KEY << std::endl;
+        
+        
+        ~node(){};
+
+        node(node &&) = default;
+        node &operator=(node &&) = default;
+        
+        node* get_parent(){
+            return parent;
+        }
+
+        void set_parent(node* other_node){
+            parent = other_node;
         }
         
-    };
+
+        node* get_left(){
+            return LEFT_child.get();
+        }
+
+        void set_left(node* other_node){
+            LEFT_child.reset(other_node);
+            other_node -> set_parent(this);
+        }
+
+        node* get_right(){
+            return RIGHT_child.get();
+        }
+
+        void set_right(node* other_node){
+            RIGHT_child.reset(other_node);
+            other_node -> set_parent(this);
+        }
+
+        
+        };
+        
+    

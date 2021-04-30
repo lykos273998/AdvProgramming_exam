@@ -18,9 +18,51 @@ class bst{
 
     comparison_operator op;
     using node_type = node<VAL_type,KEY_type>;
+    using pair = std::pair<KEY_type,VAL_type>;
 
     public:
-        std::unique_ptr<node_type> root;
+
+    std::unique_ptr<node_type> root;
+    
+    bst(const bst& bst_to_copy_from){
+        delete(root);
+        root.reset(copy_all_nodes(bst_to_copy_from.root.get()));
+    }
+
+
+
+    //copy assignment
+    bst& operator=(const bst& bst_to_copy_from){
+        return *(new bst(bst_to_copy_from));
+    }
+
+
+    
+    //defautl move, not using raw pointers;
+    bst(bst &&) = default;
+    bst &operator=(bst &&) = default;
+
+    //aux function to copy and delete nodes
+    //exploit recursion
+    
+
+    node_type* copy_all_nodes(node_type* current_node){
+        auto copied_node = new node_type(*current_node);
+        if (current_node -> get_left() != nullptr) { 
+            //copy recursively child
+            copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
+            //set recursively the parenthood, parent is a raw pointer, only for auxiliary things
+            }
+        if (current_node -> get_left() != nullptr){
+            copied_node -> set_right(copy_all_nodes(current_node -> get_right()));
+            }
+        return copied_node;
+    }
+
+    void insert(pair new_pair){
+        
+    }
+
         
 };
 

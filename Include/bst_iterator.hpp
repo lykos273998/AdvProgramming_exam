@@ -13,7 +13,7 @@
 #define ENDL std::endl;
 
 
-template <typename node_type, typename comparison_operator>
+template <typename val, typename node_type>
 struct iterator{
         using value_type = node_type;
         using difference_type = std::ptrdiff_t;
@@ -22,8 +22,6 @@ struct iterator{
         using pointer = value_type*;
 
         pointer current;
-
-        comparison_operator op;
         reference operator*(){ return  *current;}
         pointer operator->(){ return &**this;}
 
@@ -52,20 +50,27 @@ struct iterator{
             * reach the root, if even up to the root this condition is fullfilled then we have the last node
             * of the sequence ("the right-most") so we will return as his successor nullptr
             * 
+            * Now by following the property of the bst we know that the next node 
+            * will be the left most in the parents of the node
+            * so we climb up the tree since the next node will have as left child the current one
+            * 
+            * 
             */
-            if(current -> RIGHT_child.get() != nullptr){
-                aux_node_pointer = current -> RIGHT_child.get();
-                while(aux_node_pointer -> LEFT_child.get() != nullptr )
-                     aux_node_pointer = aux_node_pointer -> LEFT_child.get();
+
+            if(current -> get_left() != nullptr){
+                aux_node_pointer = current -> get_right();
+                while(aux_node_pointer -> get_left() != nullptr )
+                     aux_node_pointer = aux_node_pointer -> get_left();
                 return aux_node_pointer;
             }
             else{
+                aux_node_pointer = current -> get_parent();
+                while(aux_node_pointer -> get_left() != current) {
+                    current = aux_node_pointer;
+                    aux_node_pointer = aux_node_pointer -> get_parent();
+                   // if (aux_node_pointer == nullptr){ return nullptr;}
+                                    }
                 
-                aux_node_pointer = aux_node_pointer -> parent;
-                while(op(aux_node_pointer -> KEY, current -> KEY) ){
-                    aux_node_pointer = aux_node_pointer -> parent;
-                    if (aux_node_pointer == nullptr){ return nullptr;}
-                }
                 return aux_node_pointer;
             }
             
