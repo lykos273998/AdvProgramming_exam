@@ -13,31 +13,35 @@
 #define ENDL std::endl;
 
 
-template <typename val, typename node_type>
-struct iterator{
-        using value_type = node_type;
+template <typename pair_type, typename node_type>
+struct Iterator{
+    
+        using value_type = pair_type;
         using difference_type = std::ptrdiff_t;
         using iterator_category = std::forward_iterator_tag;
         using reference = value_type&;
         using pointer = value_type*;
 
-        pointer current;
-        reference operator*(){ return  *current;}
+        node_type* current;
+
+        reference operator*() const{ return  current -> get_pair();}
         pointer operator->(){ return &**this;}
 
-        iterator();
-        ~iterator();
+        Iterator() = default;
+        Iterator(node_type* init_node) : current{init_node} {};
 
-        iterator& operator++(){
+        ~Iterator() = default;
+
+        Iterator& operator++(){
             current = next();
             return *this;
         }
 
-        friend bool operator== (const iterator& a, const iterator& b) { return a.current == b.current; };
-        friend bool operator!= (const iterator& a, const iterator& b) { return a.current != b.current; };  
+        friend bool operator== (const Iterator& a, const Iterator& b) { return a.current == b.current; };
+        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.current != b.current; };  
         
-        pointer next(){
-            pointer aux_node_pointer = current;
+        node_type* next(){
+            node_type* aux_node_pointer = current;
             // std::cout << current -> RIGHT_child << std::endl;
 
             /*
@@ -57,7 +61,7 @@ struct iterator{
             * 
             */
 
-            if(current -> get_left() != nullptr){
+            if(current -> get_right() != nullptr){
                 aux_node_pointer = current -> get_right();
                 while(aux_node_pointer -> get_left() != nullptr )
                      aux_node_pointer = aux_node_pointer -> get_left();
@@ -65,14 +69,20 @@ struct iterator{
             }
             else{
                 aux_node_pointer = current -> get_parent();
-                while(aux_node_pointer -> get_left() != current) {
-                    current = aux_node_pointer;
-                    aux_node_pointer = aux_node_pointer -> get_parent();
-                   // if (aux_node_pointer == nullptr){ return nullptr;}
-                                    }
+
+                while(aux_node_pointer != nullptr) {
+                    if(aux_node_pointer -> get_left() == current){
+                        break;
+                    }
+                    else{
+                        current = aux_node_pointer;
+                        aux_node_pointer = aux_node_pointer -> get_parent();
+                    }
+                }
                 
                 return aux_node_pointer;
             }
+            
             
             }
         

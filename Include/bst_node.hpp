@@ -8,7 +8,7 @@
 #define VAL KV.second
 
 
-template <typename VAL_type, typename KEY_type>
+template <typename KEY_type, typename VAL_type>
 struct node
     {
         /*
@@ -16,14 +16,13 @@ struct node
         * pointer to left, right and parent nodes
         * constructors defined       
         */
-        using pair = std::pair<KEY_type,VAL_type>;
-        pair KV;
+        using pair_type = std::pair<KEY_type,VAL_type>;
+        pair_type KV;
         std::unique_ptr<node> LEFT_child;
         std::unique_ptr<node> RIGHT_child;
         node* parent;
         
-        node(const pair KV_init){
-            KV = KV_init;
+        node(const pair_type KV_init): KV{KV_init} {
             this->LEFT_child.reset(nullptr);
             this->RIGHT_child.reset(nullptr);
             this->parent = nullptr;
@@ -42,7 +41,7 @@ struct node
             std::cout << "Node " << this << "\tLCH " << LEFT_child << "\tRCH " << RIGHT_child << "\tKV " << KEY << "  " << VAL << std::endl;
         }
 
-        
+
         
         ~node(){};
 
@@ -51,6 +50,14 @@ struct node
         
         node* get_parent(){
             return parent;
+        }
+
+        KEY_type get_key(){
+            return KV.first;
+        }
+
+        pair_type& get_pair(){
+            return KV;
         }
 
         void set_parent(node* other_node){
