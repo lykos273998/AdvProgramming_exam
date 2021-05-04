@@ -18,20 +18,16 @@ struct node
         */
         using pair_type = std::pair<KEY_type,VAL_type>;
         pair_type KV;
-        std::unique_ptr<node> LEFT_child;
-        std::unique_ptr<node> RIGHT_child;
-        node* parent;
+        std::unique_ptr<node> LEFT_child{nullptr};
+        std::unique_ptr<node> RIGHT_child{nullptr};
+        node* parent{nullptr};
         
         node(const pair_type KV_init): KV{KV_init} {
             this->LEFT_child.reset(nullptr);
             this->RIGHT_child.reset(nullptr);
             this->parent = nullptr;
         };
-        node(const node &node_to_copy_from) {
-            this->LEFT_child.reset(nullptr);
-            this->RIGHT_child.reset(nullptr);
-            parent = nullptr;
-            KV = node_to_copy_from.KV;
+        node(const node &node_to_copy_from) : KV{node_to_copy_from.KV}  {            
         }
         node& operator=(const node& node_to_copy_from){
             return *(new node(node_to_copy_from));

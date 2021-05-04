@@ -31,7 +31,6 @@ class bst{
     };
 
     bst(const bst& bst_to_copy_from){
-        delete(root);
         root.reset(copy_all_nodes(bst_to_copy_from.root.get()));
     }
 
@@ -45,9 +44,11 @@ class bst{
 
 
     
-    //defautl move, not using raw pointers;
+    //defautl move, not using raw pointers, so it is enough;
     bst(bst &&) = default;
     bst &operator=(bst &&) = default;
+
+    //iterators
 
     iterator begin(){
         node_type *current = root.get();
@@ -90,38 +91,9 @@ class bst{
         return const_iterator(nullptr);
     }
     
-    
+    //insertion
 
-    node_type* copy_all_nodes(node_type* current_node){
-        auto copied_node = new node_type(*current_node);
-        if (current_node -> get_left() != nullptr) { 
-            //copy recursively child
-            copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
-            //set recursively the parenthood, parent is a raw pointer, only for auxiliary things
-            }
-        if (current_node -> get_left() != nullptr){
-            copied_node -> set_right(copy_all_nodes(current_node -> get_right()));
-            }
-        return copied_node;
-    }
-
-    friend
-    std::ostream& operator<<(std::ostream& os, const bst& x){
-        for(auto n : x)
-        {
-            os << n.first << "  " << n.second << "\n";
-        }
-        os << std::endl;
-        return os;
-    }
-
-    void print_extended(){
-        std::cout << "BEGIN OF THE TREE" << std::endl;
-        for(auto n = begin(); n != end(); ++n){
-            std::cout << n -> first << " " << n -> second << std::endl;
-        }
-    }
-    std::pair<iterator,bool> insert(pair_type pair_to_insert){
+    std::pair<iterator,bool> insert(const pair_type& pair_to_insert){
         auto node_to_insert = new node_type(pair_to_insert);
 
         if(root == nullptr){
@@ -155,7 +127,76 @@ class bst{
         
     }
 
+    std::pair<iterator,bool> insert(pair_type&& pair_to_insert){
+        auto node_to_insert = new node_type(std::move(pair_to_insert));
+
+        if(root == nullptr){
+            root.reset(node_to_insert);
+            return std::pair<iterator,bool>(iterator(root.get()),true);
+        }
+        else{
+            auto curr_node = root.get();
+            while(true){
+                if(node_to_insert -> get_key() > curr_node -> get_key()){
+                    if(curr_node -> get_right() == nullptr){
+                        curr_node -> set_right(node_to_insert);
+                        return std::pair<iterator,bool>(curr_node -> get_right(),true);
+                    }
+                    curr_node = curr_node -> get_right();
+                }
+                else if(node_to_insert -> get_key() < curr_node -> get_key()){
+                    if(curr_node -> get_left() == nullptr){
+                        curr_node -> set_left(node_to_insert);
+                        return std::pair<iterator,bool>(curr_node -> get_left(),true);
+                    }
+                    curr_node = curr_node -> get_left();
+                }
+                else{
+                    return std::pair<iterator,bool>(curr_node,false);
+                }
+
+            }
+            
+        }
         
+    }
+
+    
+
+    
+    //aux functions
+    
+
+    node_type* copy_all_nodes(node_type* current_node){
+        auto copied_node = new node_type(*current_node);
+        if (current_node -> get_left() != nullptr) { 
+            //copy recursively child
+            copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
+            //set recursively the parenthood, parent is a raw pointer, only for auxiliary things
+            }
+        if (current_node -> get_right() != nullptr){
+            copied_node -> set_right(copy_all_nodes(current_node -> get_right()));
+            }
+        return copied_node;
+    }
+
+    friend
+    std::ostream& operator<<(std::ostream& os, const bst& x){
+        for(auto n : x)
+        {
+            os << n.first << "  " << n.second << "\n";
+        }
+        os << std::endl;
+        return os;
+    }
+
+    void print_extended(){
+        std::cout << "BEGIN OF THE TREE" << std::endl;
+        for(auto n = begin(); n != end(); ++n){
+            std::cout << n -> first << " " << n -> second << std::endl;
+        }
+    }
+    
 };
 
 

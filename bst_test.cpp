@@ -34,22 +34,13 @@ int main(int argc, char** argv){
     my_tree.insert(n10);
     my_tree.insert(n14);
     my_tree.insert(n13);
-
+    my_tree.insert(pair(15,0));
 
     auto b = my_tree.begin();
+    auto my_other_tree = my_tree;
 
-    std::cout << (*b).first << std::endl;
-    std::cout << " " << x.second << std::endl;
-
-    ++b;//3
-    ++b;//4
-    ++b;
-   
-
-    std::cout << b.current -> get_left() -> get_key() << std::endl;
-    std::cout << b.current -> get_right() << std::endl;
-    std::cout << b.current -> get_parent() -> get_parent() -> get_key() << std::endl;
-
+    
     std::cout << my_tree << std::endl;
+    std::cout << my_other_tree << std::endl;
     return 0;
 }
