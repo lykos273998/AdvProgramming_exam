@@ -22,22 +22,15 @@ struct node
         std::unique_ptr<node> RIGHT_child{nullptr};
         node* parent{nullptr};
         
-        node(const pair_type KV_init): KV{KV_init} {
-            this->LEFT_child.reset(nullptr);
-            this->RIGHT_child.reset(nullptr);
-            this->parent = nullptr;
+        /*we do not want an implicit conversion between pair and node */
+        explicit node(const pair_type KV_init): KV{KV_init} {
         };
+
         node(const node &node_to_copy_from) : KV{node_to_copy_from.KV}  {            
         }
         node& operator=(const node& node_to_copy_from){
             return *(new node(node_to_copy_from));
             }
-
-        void _print_extended(){
-            std::cout << "Node " << this << "\tLCH " << LEFT_child << "\tRCH " << RIGHT_child << "\tKV " << KEY << "  " << VAL << std::endl;
-        }
-
-
         
         ~node(){};
 

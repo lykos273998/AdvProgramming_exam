@@ -34,13 +34,17 @@ int main(int argc, char** argv){
     my_tree.insert(n10);
     my_tree.insert(n14);
     my_tree.insert(n13);
-    my_tree.insert(pair(15,0));
+    
 
     auto b = my_tree.begin();
     auto my_other_tree = my_tree;
 
-    
+    my_tree.insert(pair(15,0));
+    auto my_other_tree_2{bst<int,int>(n3)};
+
     std::cout << my_tree << std::endl;
     std::cout << my_other_tree << std::endl;
+
+    std::cout << my_other_tree_2 << std::endl;
     return 0;
 }
