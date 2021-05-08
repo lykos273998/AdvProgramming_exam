@@ -138,18 +138,7 @@ class bst{
     //aux functions
     
 
-    node_type* copy_all_nodes(node_type* current_node){
-        auto copied_node = new node_type(*current_node);
-        if (current_node -> get_left() != nullptr) { 
-            //copy recursively child
-            copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
-            //set recursively the parenthood, parent is a raw pointer, only for auxiliary things
-            }
-        if (current_node -> get_right() != nullptr){
-            copied_node -> set_right(copy_all_nodes(current_node -> get_right()));
-            }
-        return copied_node;
-    }
+    node_type* copy_all_nodes(node_type* current_node);
 
     friend
     std::ostream& operator<<(std::ostream& os, const bst& x){
@@ -232,4 +221,17 @@ std::pair<typename bst<KEY_type,VAL_type,comparison_operator>::iterator,bool>
         return current;
     }
     
-
+    template <typename KEY_type, typename VAL_type, typename comparison_operator>
+    typename bst<KEY_type,VAL_type,comparison_operator>::node_type* 
+    bst<KEY_type,VAL_type,comparison_operator>::copy_all_nodes(bst<KEY_type,VAL_type,comparison_operator>::node_type* current_node){
+        auto copied_node = new node_type(*current_node);
+        if (current_node -> get_left() != nullptr) { 
+            //copy recursively child
+            copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
+            //set recursively the parenthood, parent is a raw pointer, only for auxiliary things
+            }
+        if (current_node -> get_right() != nullptr){
+            copied_node -> set_right(copy_all_nodes(current_node -> get_right()));
+            }
+        return copied_node;
+    }
