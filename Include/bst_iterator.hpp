@@ -7,8 +7,6 @@
 
 //note only to "easy to use" members of nodes
 
-#define KEY KV.first
-#define VAL KV.second
 
 #define ENDL std::endl;
 

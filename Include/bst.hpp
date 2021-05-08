@@ -5,9 +5,6 @@
 #include <utility>
 #include <exception>
 
-#define KEY KV.first
-#define VAL KV.second
-
 #define ENDL std::endl;
 
 #include "bst_node.hpp"
@@ -31,6 +28,8 @@ class bst{
     bst(const bst& bst_to_copy_from){
         root.reset(copy_all_nodes(bst_to_copy_from.root.get()));
     }
+
+    ~bst() noexcept = default;
 
     /*no conversion between type pair and bst*/
 
@@ -78,7 +77,6 @@ class bst{
     }
 
     const_iterator begin() const{
-        
         node_type *current = root.get();
         while(current -> get_left()){
             current = current -> get_left();
@@ -87,7 +85,6 @@ class bst{
     }
 
     const_iterator cbegin() const{
-        
         node_type *current = root.get();
         while(current -> get_left()){
             current = current -> get_left();
@@ -105,79 +102,39 @@ class bst{
         return const_iterator(nullptr);
     }
     
+    //clearing all the tree
+    void clear(){
+        root.reset(nullptr);
+    }
+    
     //insertion
+    std::pair<iterator,bool> _insert_node(node_type* node_to_insert);
+         
 
     std::pair<iterator,bool> insert(const pair_type& pair_to_insert){
         auto node_to_insert = new node_type(pair_to_insert);
-
-        if(root == nullptr){
-            root.reset(node_to_insert);
-            return std::pair<iterator,bool>(iterator(root.get()),true);
-        }
-        else{
-            auto curr_node = root.get();
-            while(true){
-                if(node_to_insert -> get_key() > curr_node -> get_key()){
-                    if(curr_node -> get_right() == nullptr){
-                        curr_node -> set_right(node_to_insert);
-                        return std::pair<iterator,bool>(curr_node -> get_right(),true);
-                    }
-                    curr_node = curr_node -> get_right();
-                }
-                else if(node_to_insert -> get_key() < curr_node -> get_key()){
-                    if(curr_node -> get_left() == nullptr){
-                        curr_node -> set_left(node_to_insert);
-                        return std::pair<iterator,bool>(curr_node -> get_left(),true);
-                    }
-                    curr_node = curr_node -> get_left();
-                }
-                else{
-                    return std::pair<iterator,bool>(curr_node,false);
-                }
-
-            }
-            
-        }
+        return this -> _insert_node(node_to_insert);
         
     }
 
     std::pair<iterator,bool> insert(pair_type&& pair_to_insert){
         auto node_to_insert = new node_type(std::move(pair_to_insert));
-
-        if(root == nullptr){
-            root.reset(node_to_insert);
-            return std::pair<iterator,bool>(iterator(root.get()),true);
-        }
-        else{
-            auto curr_node = root.get();
-            while(true){
-                if(node_to_insert -> get_key() > curr_node -> get_key()){
-                    if(curr_node -> get_right() == nullptr){
-                        curr_node -> set_right(node_to_insert);
-                        return std::pair<iterator,bool>(curr_node -> get_right(),true);
-                    }
-                    curr_node = curr_node -> get_right();
-                }
-                else if(node_to_insert -> get_key() < curr_node -> get_key()){
-                    if(curr_node -> get_left() == nullptr){
-                        curr_node -> set_left(node_to_insert);
-                        return std::pair<iterator,bool>(curr_node -> get_left(),true);
-                    }
-                    curr_node = curr_node -> get_left();
-                }
-                else{
-                    return std::pair<iterator,bool>(curr_node,false);
-                }
-
-            }
-            
-        }
+        return this -> _insert_node(node_to_insert);
         
     }
 
-    
 
-    
+
+    //finding
+    node_type* _find(const KEY_type& KEY);
+
+    iterator find(const KEY_type& x){
+        return iterator(_find(x));
+    }
+    const_iterator find(const KEY_type& x) const{
+        return const_iterator(_find(x));
+    }
+
     //aux functions
     
 
@@ -213,7 +170,66 @@ class bst{
     
 };
 
+template <typename KEY_type, typename VAL_type, typename comparison_operator>
+std::pair<typename bst<KEY_type,VAL_type,comparison_operator>::iterator,bool> 
+        bst<KEY_type,VAL_type,comparison_operator>::_insert_node(bst<KEY_type,VAL_type,comparison_operator>::node_type* node_to_insert)
+        {
+        if(root == nullptr){
+            root.reset(node_to_insert);
+            return std::pair<iterator,bool>(iterator(root.get()),true);
+        }
+        else{
+            auto curr_node = root.get();
+            while(true){
+                if(node_to_insert -> get_key() > curr_node -> get_key()){
+                    if(curr_node -> get_right() == nullptr){
+                        curr_node -> set_right(node_to_insert);
+                        return std::pair<iterator,bool>(curr_node -> get_right(),true);
+                    }
+                    curr_node = curr_node -> get_right();
+                }
+                else if(node_to_insert -> get_key() < curr_node -> get_key()){
+                    if(curr_node -> get_left() == nullptr){
+                        curr_node -> set_left(node_to_insert);
+                        return std::pair<iterator,bool>(curr_node -> get_left(),true);
+                    }
+                    curr_node = curr_node -> get_left();
+                }
+                else{
+                    return std::pair<iterator,bool>(curr_node,false);
+                }
 
-    /*
-    */
+            }
+            
+        } 
+    } 
+
+    template <typename KEY_type, typename VAL_type, typename comparison_operator>
+    typename bst<KEY_type,VAL_type,comparison_operator>::node_type* bst<KEY_type,VAL_type,comparison_operator>::_find (const KEY_type& KEY){
+        auto current = root.get();
+        while(current){
+            if(KEY == current -> get_key()){
+                return current;
+            }
+            else if (op(KEY,current -> get_key())){
+                if(current -> get_left()){
+                    current = current -> get_left();
+                }
+                else{
+                    return nullptr;
+                }
+            }
+            else{
+                if(current -> get_right()){
+                    current = current -> get_right();
+                }
+                else{
+                    return nullptr;
+                }
+            }
+            
+        } 
+        return current;
+    }
+    
 

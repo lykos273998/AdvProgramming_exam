@@ -46,5 +46,7 @@ int main(int argc, char** argv){
     std::cout << my_other_tree << std::endl;
 
     std::cout << my_other_tree_2 << std::endl;
+
+    std::cout << (*(my_tree.find(8))).first << std::endl;
     return 0;
 }

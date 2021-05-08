@@ -4,8 +4,7 @@
 #include <memory>
 #include <utility>
 #include <exception>
-#define KEY KV.first
-#define VAL KV.second
+
 
 
 template <typename KEY_type, typename VAL_type>
