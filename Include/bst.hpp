@@ -163,7 +163,7 @@ class bst{
         }
         /*if nullptr insert the key and leave the value type uninitialized, as before
         */
-        auto new_pair_it = insert(pair_type{x, {} }).first;
+        auto new_pair_it = insert(pair_type{std::move(x), {} }).first;
         return  new_pair_it -> second;
     }
 
