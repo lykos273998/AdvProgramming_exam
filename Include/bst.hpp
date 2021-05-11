@@ -155,8 +155,8 @@ class bst{
         return new_pair_it -> second;
     }
 
-    VAL_type& operator[](KEY_type&& rx){
-        auto x = std::move(rx);
+    VAL_type& operator[](KEY_type&& x){
+        
         iterator pos = find(x);
         if(pos.current){
             return pos -> second;
