@@ -135,6 +135,38 @@ class bst{
         return const_iterator(_find(x));
     }
 
+    //subscripting
+    VAL_type& operator[](const KEY_type& x){
+        iterator pos = find(x);
+        if(pos.current){
+            return (*pos).second;
+        }
+        /*if nullptr insert the key and leave the value type uninitialized
+        extract directly the iterator to the node
+        */ 
+        /*
+        set the second as the rhs, actually works if the return is what I want to set
+        note! 
+        If I call 
+        std::cout << tree[key_not_present] << ...
+        an insertion is performed without initializing anything, so a new node is created
+        */
+        auto new_pair_it = insert(pair_type{x, {} }).first;
+        return new_pair_it -> second;
+    }
+
+    VAL_type& operator[](KEY_type&& rx){
+        auto x = std::move(rx);
+        iterator pos = find(x);
+        if(pos.current){
+            return pos -> second;
+        }
+        /*if nullptr insert the key and leave the value type uninitialized, as before
+        */
+        auto new_pair_it = insert(pair_type{x, {} }).first;
+        return  new_pair_it -> second;
+    }
+
     //aux functions
     
 

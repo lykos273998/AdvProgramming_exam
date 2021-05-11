@@ -13,7 +13,7 @@ int main(int argc, char** argv){
     using pair = std::pair<int,int>;
    
 
-    auto n8 = pair(8,0);
+    auto n8 = pair(8,12);
     auto n3 = pair(3,0);
     auto n1 = pair(1,0);
     auto n6 = pair(6,0);
@@ -42,11 +42,9 @@ int main(int argc, char** argv){
     my_tree.insert(pair(15,0));
     auto my_other_tree_2{bst<int,int>(n3)};
 
-    std::cout << my_tree << std::endl;
-    std::cout << my_other_tree << std::endl;
+    my_tree[30] = 11;
 
-    std::cout << my_other_tree_2 << std::endl;
-
-    std::cout << (*(my_tree.find(8))).first << std::endl;
+    std::cout << my_tree[8] << std::endl;
+    std::cout << my_tree[30] << std::endl;
     return 0;
 }
