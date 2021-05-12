@@ -110,7 +110,7 @@ class bst{
     }
     
          
-
+    //insertion
     std::pair<iterator,bool> insert(const pair_type& pair_to_insert){
         return this -> _insert_node(pair_to_insert);
         
@@ -120,8 +120,12 @@ class bst{
         return this -> _insert_node(std::move(pair_to_insert));
         
     }
-
-
+    
+    //emplace
+    template< class... Types >
+    std::pair<iterator,bool> emplace(Types&&... args) {
+        return insert(pair_type(std::forward<Types>(args)...));
+    }
 
     //finding
     
@@ -196,6 +200,8 @@ class bst{
 
     template<typename O>
     node_type* _find(O&& KEY);
+
+
     
 
     node_type* copy_all_nodes(node_type* current_node);
@@ -281,8 +287,9 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         auto copied_node = new node_type(*current_node);
         if (current_node -> get_left() != nullptr) { 
             //copy recursively child
+            //and set recursively the parenthood, parent is a raw pointer, only for auxiliary things
             copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
-            //set recursively the parenthood, parent is a raw pointer, only for auxiliary things
+            
             }
         if (current_node -> get_right() != nullptr){
             copied_node -> set_right(copy_all_nodes(current_node -> get_right()));

@@ -41,6 +41,7 @@ int main(int argc, char** argv){
     auto my_other_tree = my_tree;
 
     my_tree.insert(pair(15,0));
+    my_tree.emplace(1111,0);
     int k = 30;
     my_tree[k] = 11;
     
