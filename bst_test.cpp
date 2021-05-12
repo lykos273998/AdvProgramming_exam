@@ -41,11 +41,10 @@ int main(int argc, char** argv){
     auto my_other_tree = my_tree;
 
     my_tree.insert(pair(15,0));
-    auto my_other_tree_2{bst<int,int>(n3)};
     int k = 30;
     my_tree[k] = 11;
     
     std::cout << my_tree << std::endl;
-    std::cout << my_tree[k] << std::endl;
+    std::cout << my_other_tree << std::endl;
     return 0;
 }

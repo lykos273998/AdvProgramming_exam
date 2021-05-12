@@ -108,18 +108,17 @@ class bst{
     }
     
     //insertion
-    std::pair<iterator,bool> _insert_node(node_type* node_to_insert);
+    template<typename O>
+    std::pair<iterator,bool> _insert_node(O&& node_to_insert);
          
 
     std::pair<iterator,bool> insert(const pair_type& pair_to_insert){
-        auto node_to_insert = new node_type(pair_to_insert);
-        return this -> _insert_node(node_to_insert);
+        return this -> _insert_node(pair_to_insert);
         
     }
 
     std::pair<iterator,bool> insert(pair_type&& pair_to_insert){
-        auto node_to_insert = new node_type(std::move(pair_to_insert));
-        return this -> _insert_node(node_to_insert);
+        return this -> _insert_node(std::move(pair_to_insert));
         
     }
 
@@ -191,10 +190,17 @@ class bst{
     
 };
 
+/* based on linked list lecture
+    uses forwarding reference to simplify insertion of a node,
+    if a r-vale ref to pair is passed to contructor of node resources are stolen
+*/
+
 template <typename KEY_type, typename VAL_type, typename comparison_operator>
+template<typename O>
 std::pair<typename bst<KEY_type,VAL_type,comparison_operator>::iterator,bool> 
-        bst<KEY_type,VAL_type,comparison_operator>::_insert_node(bst<KEY_type,VAL_type,comparison_operator>::node_type* node_to_insert)
+bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         {
+        auto node_to_insert = new node_type(std::forward<O>(pair_to_insert));
         if(root == nullptr){
             root.reset(node_to_insert);
             return std::pair<iterator,bool>(iterator(root.get()),true);
@@ -226,7 +232,8 @@ std::pair<typename bst<KEY_type,VAL_type,comparison_operator>::iterator,bool>
     } 
 
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
-    typename bst<KEY_type,VAL_type,comparison_operator>::node_type* bst<KEY_type,VAL_type,comparison_operator>::_find (const KEY_type& KEY){
+    typename bst<KEY_type,VAL_type,comparison_operator>::node_type* 
+    bst<KEY_type,VAL_type,comparison_operator>::_find (const KEY_type& KEY){
         auto current = root.get();
         while(current){
             if(KEY == current -> get_key()){

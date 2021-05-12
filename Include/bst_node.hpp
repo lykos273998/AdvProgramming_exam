@@ -22,7 +22,11 @@ struct node
         node* parent{nullptr};
         
         /*we do not want an implicit conversion between pair and node */
-        explicit node(const pair_type KV_init): KV{KV_init} {
+        explicit node(const pair_type& KV_init): KV{KV_init} {
+        };
+
+        explicit node(pair_type&& KV_init): KV{std::move(KV_init)} {
+           // std::cout << "r-val node ctor" << std::endl;
         };
 
         node(const node &node_to_copy_from) : KV{node_to_copy_from.KV}  {            
@@ -36,6 +40,8 @@ struct node
         node(node &&) = default;
         node &operator=(node &&) = default;
         
+
+
         node* get_parent(){
             return parent;
         }
