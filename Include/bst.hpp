@@ -20,6 +20,8 @@ class bst{
     using const_iterator = Iterator<const pair_type,node_type>;
     using iterator = Iterator<pair_type,node_type>;
     
+
+
     public:
 
     std::unique_ptr<node_type> root{nullptr};
@@ -107,9 +109,6 @@ class bst{
         root.reset(nullptr);
     }
     
-    //insertion
-    template<typename O>
-    std::pair<iterator,bool> _insert_node(O&& node_to_insert);
          
 
     std::pair<iterator,bool> insert(const pair_type& pair_to_insert){
@@ -125,7 +124,7 @@ class bst{
 
 
     //finding
-    node_type* _find(const KEY_type& KEY);
+    
 
     iterator find(const KEY_type& x){
         return iterator(_find(x));
@@ -167,9 +166,7 @@ class bst{
     }
 
     //aux functions
-    
 
-    node_type* copy_all_nodes(node_type* current_node);
 
     friend
     std::ostream& operator<<(std::ostream& os, const bst& x){
@@ -187,6 +184,23 @@ class bst{
             std::cout << n -> first << " " << n -> second << std::endl;
         }
     }
+
+
+
+    private:
+
+
+    //insertion
+    template<typename O>
+    std::pair<iterator,bool> _insert_node(O&& node_to_insert);
+
+    template<typename O>
+    node_type* _find(O&& KEY);
+    
+
+    node_type* copy_all_nodes(node_type* current_node);
+
+   
     
 };
 
@@ -232,8 +246,9 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
     } 
 
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
+    template <typename O>
     typename bst<KEY_type,VAL_type,comparison_operator>::node_type* 
-    bst<KEY_type,VAL_type,comparison_operator>::_find (const KEY_type& KEY){
+    bst<KEY_type,VAL_type,comparison_operator>::_find (O&& KEY){
         auto current = root.get();
         while(current){
             if(KEY == current -> get_key()){
