@@ -28,7 +28,7 @@ class bst{
     bst() = default;
 
     bst(const bst& bst_to_copy_from){
-        root.reset(copy_all_nodes(bst_to_copy_from.root.get()));
+        root.reset(new node_type(bst_to_copy_from.root.get()));
     }
 
     ~bst() noexcept = default;
@@ -281,6 +281,7 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         return current;
     }
     
+    /*
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
     typename bst<KEY_type,VAL_type,comparison_operator>::node_type* 
     bst<KEY_type,VAL_type,comparison_operator>::copy_all_nodes(bst<KEY_type,VAL_type,comparison_operator>::node_type* current_node){
@@ -296,3 +297,4 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
             }
         return copied_node;
     }
+*/

@@ -29,8 +29,20 @@ struct node
            // std::cout << "r-val node ctor" << std::endl;
         };
 
-        node(const node &node_to_copy_from) : KV{node_to_copy_from.KV}  {            
+        
+        node(node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
+            if(node_to_copy_from -> get_left()){
+                set_left(new node(node_to_copy_from -> get_left()));
+            }
+            if(node_to_copy_from -> get_right()){
+                set_right(new node(node_to_copy_from -> get_right()));
+            }
         }
+
+
+        node(const node &node_to_copy_from) : node{&node_to_copy_from}  {     
+            }
+
         node& operator=(const node& node_to_copy_from){
             return *(new node(node_to_copy_from));
             }
