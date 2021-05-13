@@ -66,6 +66,10 @@ struct node
             return KV.first;
         }
 
+        VAL_type get_val(){
+            return KV.second;
+        }
+
         pair_type& get_pair(){
             return KV;
         }

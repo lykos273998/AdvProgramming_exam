@@ -5,7 +5,7 @@
 #include <utility>
 #include <exception>
 
-#define ENDL std::endl;
+#define COUNT 10 
 
 #include "bst_node.hpp"
 #include "bst_iterator.hpp"
@@ -195,6 +195,12 @@ class bst{
         }
     }
 
+    void Fancy_print() 
+    { 
+        // Pass initial space count as 0 
+        print2DUtil(root.get(), 0); 
+    } 
+
 
 
     private:
@@ -212,9 +218,37 @@ class bst{
 
     node_type* copy_all_nodes(node_type* current_node);
 
+    /*
+    Not mine code, actually taken from an article on the web and re adapted to 
+    work on that implementation.
+    Produces a fancy plot,
+    not requested by the exam but beautyfull to see
+    */
+    void print2DUtil(node_type *root, int space) 
+    { 
+        if (root == nullptr) 
+            return; 
+    
+        // Increase distance between levels 
+        space += COUNT; 
+    
+        // Process right child first 
+        print2DUtil(root->get_right(), space); 
+    
+        // Print current node after space 
+        // count 
+        std::cout<<std::endl; 
+        for (int i = COUNT; i < space; i++) 
+            std::cout<<" "; 
+        std::cout<< "K:" <<root -> get_key()<< " V:" << root -> get_val() <<"\n"; 
+    
+        // Process left child 
+        print2DUtil(root-> get_left(), space);  // Base case 
+   
+        } 
    
     
-};
+    };
 
 /* based on linked list lecture
     uses forwarding reference to simplify insertion of a node,
@@ -286,6 +320,7 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         } 
         return current;
     }
+
     
     /*
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
