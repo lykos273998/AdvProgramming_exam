@@ -29,7 +29,11 @@ struct node
            // std::cout << "r-val node ctor" << std::endl;
         };
 
-        
+        /*
+        deep copy of the tree is performed at this level
+        each node once copied copies all its childs recursively
+        */
+
         node(node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
             if(node_to_copy_from -> get_left()){
                 set_left(new node(node_to_copy_from -> get_left()));

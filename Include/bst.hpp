@@ -28,6 +28,7 @@ class bst{
     bst() = default;
 
     bst(const bst& bst_to_copy_from){
+        /*copy only the roots, then the full deep copy is performed at node level*/
         root.reset(new node_type(bst_to_copy_from.root.get()));
     }
 
@@ -35,11 +36,11 @@ class bst{
 
     /*no conversion between type pair and bst*/
 
-    /*
+    
     explicit bst(const pair_type& p){
         root.reset(new node_type(p));
     }
-*/
+
 
     explicit bst(pair_type&& p){
         root.reset(new node_type(std::move(p)));
@@ -106,7 +107,7 @@ class bst{
     
     //clearing all the tree
     void clear(){
-        root.reset(nullptr);
+        root.reset();
     }
     
          
@@ -126,6 +127,7 @@ class bst{
     std::pair<iterator,bool> emplace(Types&&... args) {
         return insert(pair_type(std::forward<Types>(args)...));
     }
+   
 
     //finding
     
@@ -174,6 +176,10 @@ class bst{
 
     friend
     std::ostream& operator<<(std::ostream& os, const bst& x){
+        if(x.root.get() == nullptr){
+            os << "Empty tree, please insert some nodes" << std::endl;
+            return os;
+        }
         for(auto n : x)
         {
             os << n.first << "  " << n.second << "\n";

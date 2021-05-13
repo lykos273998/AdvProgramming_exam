@@ -47,5 +47,8 @@ int main(int argc, char** argv){
     
     std::cout << my_tree << std::endl;
     std::cout << my_other_tree << std::endl;
+
+    my_other_tree.clear();
+    std::cout << my_other_tree << std::endl;
     return 0;
 }
