@@ -234,14 +234,14 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         else{
             auto curr_node = root.get();
             while(true){
-                if(node_to_insert -> get_key() > curr_node -> get_key()){
+                if(!op(node_to_insert -> get_key(),curr_node -> get_key())){
                     if(curr_node -> get_right() == nullptr){
                         curr_node -> set_right(node_to_insert);
                         return std::pair<iterator,bool>{curr_node -> get_right(),true};
                     }
                     curr_node = curr_node -> get_right();
                 }
-                else if(node_to_insert -> get_key() < curr_node -> get_key()){
+                else if(op(node_to_insert -> get_key(),curr_node -> get_key())){
                     if(curr_node -> get_left() == nullptr){
                         curr_node -> set_left(node_to_insert);
                         return std::pair<iterator,bool>{curr_node -> get_left(),true};

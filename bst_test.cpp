@@ -22,7 +22,7 @@ int main(int argc, char** argv){
     auto n10 =pair{10,0};
     auto n14 =pair{14,0};
     auto n13 =pair{13,0};
-    auto my_tree = bst<int,int>();
+    auto my_tree = bst<int,int,std::greater<int>>();
 
     auto x = my_tree.insert(n8);
     my_tree.insert(n3);
