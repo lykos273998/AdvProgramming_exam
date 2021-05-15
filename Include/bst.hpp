@@ -25,11 +25,14 @@ class bst{
     public:
 
     std::unique_ptr<node_type> root{nullptr};
+    size_t Tot_nodes = 0;
+
     bst() = default;
 
     bst(const bst& bst_to_copy_from){
         /*copy only the roots, then the full deep copy is performed at node level*/
         root.reset(new node_type(bst_to_copy_from.root.get()));
+        Tot_nodes = bst_to_copy_from.Tot_nodes;
     }
 
     ~bst() noexcept = default;
@@ -39,11 +42,13 @@ class bst{
     
     explicit bst(const pair_type& p){
         root.reset(new node_type(p));
+        Tot_nodes = 1;
     }
 
 
     explicit bst(pair_type&& p){
         root.reset(new node_type(std::move(p)));
+        Tot_nodes = 1;
     }
 
     
@@ -215,8 +220,9 @@ class bst{
 
 
     
-
+    /*
     node_type* copy_all_nodes(node_type* current_node);
+    */
 
     /*
     Not mine code, actually taken from an article on the web and re adapted to 
@@ -260,6 +266,7 @@ template<typename O>
 std::pair<typename bst<KEY_type,VAL_type,comparison_operator>::iterator,bool> 
 bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         {
+        Tot_nodes = Tot_nodes + 1;
         auto node_to_insert = new node_type(std::forward<O>(pair_to_insert));
         if(root == nullptr){
             root.reset(node_to_insert);
