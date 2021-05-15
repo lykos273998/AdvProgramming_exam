@@ -5,7 +5,7 @@
 #include <utility>
 #include <exception>
 
-#define COUNT 10 
+#define COUNT 11
 
 #include "bst_node.hpp"
 #include "bst_iterator.hpp"
