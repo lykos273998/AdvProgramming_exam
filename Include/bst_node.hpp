@@ -48,7 +48,11 @@ struct node
             }
 
         node& operator=(const node& node_to_copy_from){
-            return *(new node(node_to_copy_from));
+            LEFT_child.reset();
+            RIGHT_child.reset();
+            auto tmp{node_to_copy_from};
+            *this = std::move(tmp);
+            return *this;
             }
         
         ~node(){};
