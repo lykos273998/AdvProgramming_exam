@@ -47,14 +47,13 @@ struct Iterator{
             * The idea is that starting from a general node its successor will be on the right
             * This opens 2 cases: 
             *     i) The successor is the "Left-most" node on the right branch, first case of the if
-            *     ii) The successor is one of the nodes in the "parenthood" case 2 of the if
-            * In the second case we have to check if node.key > node.parent, eventually we will 
-            * reach the root, if even up to the root this condition is fullfilled then we have the last node
-            * of the sequence ("the right-most") so we will return as his successor nullptr
-            * 
-            * Now by following the property of the bst we know that the next node 
-            * will be the left most in the parents of the node
-            * so we climb up the tree since the next node will have as left child the current one
+            *     ii) The successor is one of the nodes in the "parenthood", second case of the if
+            * For the second case 
+            * following the property of the bst we know that the next node 
+            * will be the left most in the parents of the node, namely, the next node must be the first parent
+            * who is on the right of the node we start from,
+            * So we climb up the tree since the next node will have as left child the current one, 
+            * so by doing that we have found the first node "on the right of the starting point" and we stop
             * 
             * 
             */
