@@ -64,12 +64,12 @@ struct node
             return *this;
             }
         /**default destuctor*/
-        ~node() = default;
+        ~node() noexcept = default;
 
         /**default move constructor*/
-        node(node &&) = default;
+        node(node &&) noexcept = default;
         /**default move assignment*/
-        node &operator=(node &&) = default;
+        node &operator=(node &&) noexcept = default;
         
 
         /**returns pointer to parent of the node*/
