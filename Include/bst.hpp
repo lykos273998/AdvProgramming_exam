@@ -10,6 +10,13 @@
 #include "bst_node.hpp"
 #include "bst_iterator.hpp"
 
+/**
+ * BST implementation, templated on the KEY type, the VALUE type and the 
+ * COMPARISON operator between key values
+ * 
+ * 
+*/
+
 template <typename KEY_type, typename VAL_type, typename comparison_operator=std::less<KEY_type>>
 class bst{
 
@@ -24,22 +31,20 @@ class bst{
 
     public:
 
-    std::unique_ptr<node_type> root{nullptr};
-    size_t Tot_nodes = 0;
+    std::unique_ptr<node_type> root{nullptr}; /** unique_ptr pointing to the root of the tree*/
+    size_t Tot_nodes = 0; /** number of nodes present in the tree in any moment*/
+
+    /**
+     * Default constructor for bst class
+     * */
 
     bst() = default;
 
-    bst(const bst& bst_to_copy_from){
-        /*copy only the roots, then the full deep copy is performed at node level*/
-        root.reset(new node_type(bst_to_copy_from.root.get()));
-        Tot_nodes = bst_to_copy_from.Tot_nodes;
-    }
+    /**
+     * Constructor for bst class taking as input a pair 
+     * */
 
-    ~bst() noexcept = default;
 
-    /*no conversion between type pair and bst*/
-
-    
     explicit bst(const pair_type& p){
         root.reset(new node_type(p));
         Tot_nodes = 1;
@@ -53,8 +58,25 @@ class bst{
 
     
 
+    /**
+     * copy constructor 
+     * */
 
-    //copy assignment
+
+    bst(const bst& bst_to_copy_from){
+        /*copy only the roots, then the full deep copy is performed at node level*/
+        root.reset(new node_type(bst_to_copy_from.root.get()));
+        Tot_nodes = bst_to_copy_from.Tot_nodes;
+    }
+
+    ~bst() noexcept = default;
+
+    
+
+
+    /**copy assignment
+     * 
+     * */
     bst& operator=(const bst& bst_to_copy_from){
         root.reset();
         auto tmp = bst_to_copy_from;
@@ -64,13 +86,20 @@ class bst{
 
 
 
-    
-    //defautl move, not using raw pointers, so it is enough;
+    /**move constructor 
+     * Since no raw pointers are used, then default is enough
+     * */
     bst(bst&& x) noexcept  = default;
+
+    /**move assignment
+     * Since no raw pointers are used, then default is enough
+     * */
     bst &operator=(bst&& x) noexcept = default;
 
-    //iterators
-
+    /**
+     * begin iterator relies on the implementation of the iterator
+     * for bst class
+     * */
     iterator begin(){
         node_type *current = root.get();
         while(current -> get_left()){
@@ -79,10 +108,20 @@ class bst{
         return iterator(current);
     }
 
+    /**
+     * end iterator relies on the implementation of the iterator
+     * for bst class
+     * */
+
     iterator end(){
         node_type *current = root.get();
         return iterator(nullptr);
     }
+
+    /**
+     * begin iterator relies on the implementation of the iterator
+     * for bst class
+     * */
 
     const_iterator begin() const{
         node_type *current = root.get();
@@ -92,6 +131,11 @@ class bst{
         return const_iterator(current);
     }
 
+     /**
+     * begin iterator relies on the implementation of the iterator
+     * for bst class
+     * */
+
     const_iterator cbegin() const{
         node_type *current = root.get();
         while(current -> get_left()){
@@ -100,43 +144,74 @@ class bst{
         return const_iterator(current);
     }
 
+     /**
+     * end iterator relies on the implementation of the iterator
+     * for bst class
+     * */
+
     const_iterator end() const{
         node_type *current = root.get();
         return const_iterator(nullptr);
     }
+
+     /**
+     * end iterator relies on the implementation of the iterator
+     * for bst class
+     * */
 
     const_iterator cend() const{
         node_type *current = root.get();
         return const_iterator(nullptr);
     }
     
-    //clearing all the tree
+    /**
+     * Clear method, resets to nullptr all the root of the tree
+     * since the relationships between nodes in the tree
+     * are implemented using unique_ptr this destroys recursively 
+     * all the nodes in the tree clearing its content.
+     * The number of node in the bst is set to 0
+     * */
     void clear(){
         root.reset();
+        Tot_nodes = 0;
     }
     
          
-    //insertion
+    /**
+    * Insertion method for a l-value reference of a type pair,
+    * relies on the implementation of the private function _insert_node
+    *
+    */
     std::pair<iterator,bool> insert(const pair_type& pair_to_insert){
         return this -> _insert_node(pair_to_insert);
         
     }
 
+    /**
+    * Insertion method for a r-value reference of a type pair,
+    * relies on the implementation of the private function _insert_node
+    *
+    */
     std::pair<iterator,bool> insert(pair_type&& pair_to_insert){
         return this -> _insert_node(std::move(pair_to_insert));
         
     }
     
-    //emplace
+    /**
+     * Inserts a new element into the container constructed in-place 
+     * with the given args if there is no element with the key in the container.
+     * */
     template< class... Types >
     std::pair<iterator,bool> emplace(Types&&... args) {
         return insert(pair_type(std::forward<Types>(args)...));
     }
    
 
-    //finding
-    
-
+    /**
+     * 
+     * Find a given key. If the key is present, 
+     * returns an iterator to the proper node, end() otherwise.
+     * */
     iterator find(const KEY_type& x){
         return iterator(_find(x));
     }
@@ -144,21 +219,28 @@ class bst{
         return const_iterator(_find(x));
     }
 
-    //subscripting
+    /**
+     * Returns a reference to the value that is mapped to a key equivalent to x, 
+     * performing an insertion if such key does not already exist.
+     * */
     VAL_type& operator[](const KEY_type& x){
+        /** uses find method implemented before
+         *  
+        */
+
         iterator pos = find(x);
         if(pos.current){
             return (*pos).second;
         }
-        /*if nullptr insert the key and leave the value type uninitialized
-        extract directly the iterator to the node
-        */ 
-        /*
-        set the second as the rhs, actually works if the return is what I want to set
-        note! 
-        If I call 
-        std::cout << tree[key_not_present] << ...
-        an insertion is performed without initializing anything, so a new node is created
+        /**
+        * if nullptr insert the key and leave the value type uninitialized
+        * extract directly the iterator to the node
+        * set the second as the rhs, actually works if the return is what I want to set
+        * note! 
+        * 
+        * If I call 
+        * std::cout << tree[key_not_present] << ...
+        * an insertion is performed without initializing anything, so a new node is created
         */
         auto new_pair_it = insert(pair_type{x, {} }).first;
         return new_pair_it -> second;
@@ -170,22 +252,28 @@ class bst{
         if(pos.current){
             return pos -> second;
         }
-        /*if nullptr insert the key and leave the value type uninitialized, as before
+        /*
+        * if nullptr insert the key and leave the value type uninitialized, as before
+        * now the difference is that the KEY_type is an r-value and the KEY tipe
+        * is moved into the new pair created
         */
         auto new_pair_it = insert(pair_type{std::move(x), {} }).first;
         return  new_pair_it -> second;
     }
 
-    //aux functions
-
-
+    
+    /**
+     * put-to operator, if the tree is empty shows a message,
+     * if not uses reange based for loop to print all key-value
+     * pairs stored in order
+     * */
     friend
     std::ostream& operator<<(std::ostream& os, const bst& x){
         if(x.root.get() == nullptr){
             os << "Empty tree, please insert some nodes" << std::endl;
             return os;
         }
-        for(auto n : x)
+        for(const auto& n : x)
         {
             os << n.first << "  " << n.second << "\n";
         }
@@ -193,13 +281,12 @@ class bst{
         return os;
     }
 
-    void print_extended(){
-        std::cout << "BEGIN OF THE TREE" << std::endl;
-        for(auto n = begin(); n != end(); ++n){
-            std::cout << n -> first << " " << n -> second << std::endl;
-        }
-    }
-
+    /**
+     * implementation of a pictorial way to see the tree structure
+     * usefull also for debugging, not requested by the exam.
+     * The code used is taken from an article on the web and adapted to 
+     * work with this implementation of a bst
+     * */
     void Fancy_print() 
     { 
         // Pass initial space count as 0 
@@ -211,25 +298,31 @@ class bst{
     private:
 
 
-    //insertion
+    /**
+     * private insertion method, uses universal forwarding reference to 
+     * deal with l and r values at the same time, inspired from lecture
+     * on linked lists
+     * */
     template<typename O>
     std::pair<iterator,bool> _insert_node(O&& node_to_insert);
-
+    
+    /**
+     * private find method, uses universal forwarding reference to 
+     * deal with l and r values at the same time, inspired from lecture
+     * on linked lists
+     * */
     template<typename O>
     node_type* _find(O&& KEY);
 
 
     
-    /*
-    node_type* copy_all_nodes(node_type* current_node);
-    */
 
-    /*
-    Not mine code, actually taken from an article on the web and re adapted to 
-    work on that implementation.
-    Produces a fancy plot,
-    not requested by the exam but beautyfull to see
-    */
+   /**
+     * implementation of a pictorial way to see the tree structure
+     * usefull also for debugging, not requested by the exam.
+     * The code used is taken from an article on the web and adapted to 
+     * work with this implementation of a bst
+     * */
     void print2DUtil(node_type *root, int space) 
     { 
         if (root == nullptr) 
@@ -256,10 +349,6 @@ class bst{
     
     };
 
-/* based on linked list lecture
-    uses forwarding reference to simplify insertion of a node,
-    if a r-vale ref to pair is passed to contructor of node resources are stolen
-*/
 
 template <typename KEY_type, typename VAL_type, typename comparison_operator>
 template<typename O>

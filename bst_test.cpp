@@ -46,9 +46,28 @@ int main(int argc, char** argv){
     my_tree[k] = 11;
     
     std::cout << my_tree << std::endl;
-    std::cout << my_other_tree << std::endl;
+    //std::cout << my_other_tree << std::endl;
 
     my_tree.Fancy_print();
+
+    //bst<int,int> ttest = bst<int,int>{};
+    //std::cout << (*(my_tree.find(7))).first <<std::endl;
+/*
+    ttest.emplace(5,0);
+    ttest.emplace(2,0);
+    ttest.emplace(4,0);
+    ttest.emplace(3,0);
+    ttest.emplace(1,0);
+    ttest.emplace(0,0);
+    ttest.emplace(8,0);
+    ttest.emplace(9,0);
+    ttest.emplace(6,0);
+    ttest.emplace(7,0);
+
+
+    ttest.Fancy_print();*/
+
+   // std::cout << ttest << std::endl;
 
     return 0;
 }
