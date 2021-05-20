@@ -9,7 +9,7 @@
 //#include "Include/bst_node.hpp"
 //#include "Include/bst_iterator.hpp"
 
-int main(int argc, char** argv){
+int main(){
     using pair = std::pair<int,int>;
    
 
@@ -24,7 +24,7 @@ int main(int argc, char** argv){
     auto n13 =pair{13,0};
     auto my_tree = bst<int,int,std::greater<int>>();
 
-    auto x = my_tree.insert(n8);
+    my_tree.insert(n8);
     my_tree.insert(n3);
     my_tree.insert(n1);
     my_tree.insert(n6);
