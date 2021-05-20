@@ -114,7 +114,7 @@ class bst{
      * */
 
     iterator end(){
-        node_type *current = root.get();
+      
         return iterator(nullptr);
     }
 
@@ -150,7 +150,6 @@ class bst{
      * */
 
     const_iterator end() const{
-        node_type *current = root.get();
         return const_iterator(nullptr);
     }
 
@@ -160,7 +159,7 @@ class bst{
      * */
 
     const_iterator cend() const{
-        node_type *current = root.get();
+        
         return const_iterator(nullptr);
     }
     
