@@ -36,8 +36,6 @@ int main(){
     my_tree.insert(std::move(n13));
 
     
-
-    auto b = my_tree.begin();
     auto my_other_tree = my_tree;
 
     my_tree.insert(pair(15,0));
@@ -45,8 +43,15 @@ int main(){
     int k = 30;
     my_tree[k] = 11;
     
+
+    auto b = my_tree.begin();
+    ++b;
+    ++b;
+    ++b;
+    ++b;
+    b -> second = 45000;
     std::cout << my_tree << std::endl;
-    //std::cout << my_other_tree << std::endl;
+    std::cout << my_other_tree << std::endl;
 
     my_tree.Fancy_print();
 

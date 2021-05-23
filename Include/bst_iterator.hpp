@@ -27,7 +27,7 @@ struct Iterator{
         reference operator*() const{ return  current -> get_pair();}
         /**pointer arrow operator, returns
          * the key-value pair of the current node returns*/
-        pointer operator->(){ return &**this;}
+        pointer operator->(){ return &(*(*this));}
 
         /**default constructor*/
         Iterator() = default;

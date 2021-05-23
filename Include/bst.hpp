@@ -43,13 +43,11 @@ class bst{
     /**
      * Constructor for bst class taking as input a pair 
      * */
-
-
     explicit bst(const pair_type& p){
         root.reset(new node_type(p));
         Tot_nodes = 1;
     }
-
+    
 
     explicit bst(pair_type&& p){
         root.reset(new node_type(std::move(p)));
@@ -61,8 +59,6 @@ class bst{
     /**
      * copy constructor 
      * */
-
-
     bst(const bst& bst_to_copy_from){
         /*copy only the roots, then the full deep copy is performed at node level*/
         root.reset(new node_type(bst_to_copy_from.root.get()));
@@ -70,9 +66,6 @@ class bst{
     }
 
     ~bst() noexcept = default;
-
-    
-
 
     /**copy assignment
      * 
@@ -356,7 +349,7 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         {
         Tot_nodes = Tot_nodes + 1;
         auto node_to_insert = new node_type(std::forward<O>(pair_to_insert));
-        if(root == nullptr){
+        if(root.get() == nullptr){
             root.reset(node_to_insert);
             return std::pair<iterator,bool>(iterator(root.get()),true);
         }
@@ -415,6 +408,9 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         } 
         return current;
     }
+
+
+    
 
     
     /*

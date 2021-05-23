@@ -17,16 +17,16 @@ struct node
         */
         using pair_type = std::pair<KEY_type,VAL_type>;
         pair_type KV;
-        std::unique_ptr<node> LEFT_child{nullptr};
+        std::unique_ptr<node> LEFT_child{nullptr}; 
         std::unique_ptr<node> RIGHT_child{nullptr};
         node* parent{nullptr};
         
         /**node constructor from a l-value reference to a type pair*/
-        explicit node(const pair_type& KV_init): KV{KV_init} {
+        explicit node(const pair_type& KV_init) noexcept : KV{KV_init} {
         };
 
         /**node constructor from a r-value reference to a type pair*/
-        explicit node(pair_type&& KV_init): KV{std::move(KV_init)} {
+        explicit node(pair_type&& KV_init) noexcept : KV{std::move(KV_init)} {
            // std::cout << "r-val node ctor" << std::endl;
         };
 
@@ -36,7 +36,7 @@ struct node
         * each node once copied, copies all its childs recursively
         * So by invoking the cop of the root the whole tree is copied
         */
-        node(node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
+        node(const node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
             if(node_to_copy_from -> get_left()){
                 set_left(new node(node_to_copy_from -> get_left()));
             }
@@ -52,7 +52,9 @@ struct node
         * So by invoking the cop of the root the whole tree is copied
         */
         node(const node &node_to_copy_from) : node{&node_to_copy_from}  {     
+           
             }
+
         /**
          * copy assignment, uses copy constructor
          * */
@@ -95,7 +97,7 @@ struct node
         }
 
         /**returns a raw ptr to the left child*/
-        node* get_left(){
+        node* get_left() const {
             return LEFT_child.get();
         }
         /**sets the left child unique_ptr, taking as input a raw ptr
@@ -106,7 +108,7 @@ struct node
             other_node -> set_parent(this);
         }
         /**returns a raw ptr to the right child*/
-        node* get_right(){
+        node* get_right() const {
             return RIGHT_child.get();
         }
 
