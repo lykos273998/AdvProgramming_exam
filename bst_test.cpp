@@ -12,18 +12,26 @@
 int main(){
     using pair = std::pair<int,int>;
    
-
+    /**
+     * Generating some KV pairs to be inserted
+     * */
     auto n8 = pair{8,12};
     auto n3 = pair{3,0};
     auto n1 = pair{1,0};
     auto n6 = pair{6,0};
     auto n4 = pair{4,0};
     auto n7 = pair{7,0};
-    auto n10 =pair{10,0};
-    auto n14 =pair{14,0};
-    auto n13 =pair{13,0};
-    auto my_tree = bst<int,int,std::greater<int>>();
+    auto n10 = pair{10,0};
+    auto n14 = pair{14,0};
 
+    /*
+    * Initializing an empty bst, using int as types  for Key and Values
+    */
+    auto my_tree = Bst<int,int>{};
+
+    /**
+     * Inseriting the previoulsy generated pairs in the tree
+     * */
     my_tree.insert(n8);
     my_tree.insert(n3);
     my_tree.insert(n1);
@@ -31,62 +39,66 @@ int main(){
     my_tree.insert(n4);
     my_tree.insert(n7);
     my_tree.insert(n10);
-    my_tree.insert(n14);
-    my_tree.insert(pair{11,10});
-    my_tree.insert(std::move(n13));
-
-    
-    auto my_other_tree = my_tree;
-
-    my_tree.insert(pair(15,0));
-    my_tree.emplace(1111,0);
-    int k = 30;
-    my_tree[k] = 11;
     
 
-    auto b = my_tree.begin();
-    ++b;
-    ++b;
-    ++b;
-    ++b;
-    b -> second = 45000;
+    auto succesfull_insertion = my_tree.insert(n14);
+    auto failed_insertion = my_tree.emplace(14,110);
+
+    std::cout << "first time inserting a node with 14 as KEY: " << (succesfull_insertion.second ? "true" : "false") << std::endl;
+    std::cout << "second time inserting a node with 14 as KEY: " << (failed_insertion.second ? "true" : "false") << std::endl;
+    /*
+    * forcing the insertion of an r - value
+    */
+    my_tree.insert(pair{13,131313});
+    /**
+     * inserting thorugh subscripting
+     * */
+    my_tree[5] = 55;
+
+    /*
+    * testing emplace
+    */
+    my_tree.emplace(127, 22);
+
+    /**
+     * printing the content of the tree
+     * */
     std::cout << my_tree << std::endl;
-    std::cout << my_other_tree << std::endl;
+    my_tree.Fancy_print();
 
-   // my_tree.Fancy_print();
+    /**
+     * 
+     * Testing find and subscripting operators
+     * 
+     * Retriving a value through subscripting operator
+     * 
+     */
+    std::cout << "Retriving a value through subscripting operator \n";
+    std::cout << "searching for KEY 5 expecting value 55 \n";
+    std::cout << my_tree[5] << std::endl;
 
-    //bst<int,int> ttest = bst<int,int>{};
-    //std::cout << (*(my_tree.find(7))).first <<std::endl;
-/*
-    ttest.emplace(5,0);
-    ttest.emplace(2,0);
-    ttest.emplace(4,0);
-    ttest.emplace(3,0);
-    ttest.emplace(1,0);
-    ttest.emplace(0,0);
-    ttest.emplace(8,0);
-    ttest.emplace(9,0);
-    ttest.emplace(6,0);
-    ttest.emplace(7,0);
+    /**
+    * Retriving a KV pair through find method
+    *
+    */
+    std::cout << "Retriving a value through find method \n";
+    std::cout << "searching for KEY 13 expecting VALUE 131313 \n";
+    std::cout << (*(my_tree.find(13))).second << std::endl;
 
-
-    ttest.Fancy_print();*/
-
-   // std::cout << ttest << std::endl;
-   // my_tree.balance();
-
-    //my_tree.Fancy_print();
-
-    my_other_tree.clear();
-
-    for(int i = 0; i<10; ++i){
-        my_other_tree.insert(pair{i,0});
+    /**
+     * clearing the tree to do further tests
+    */
+    my_tree.clear();
+    std::cout << "\nNow building an unbalanced tree and printing it" << std::endl;
+    for(int i = -6 ; i<10; ++i){
+        my_tree.emplace(i,0);
     }
+    my_tree.Fancy_print();
 
-    my_other_tree.Fancy_print();
+    std::cout << "\nRebalancing and printing the tree" << std::endl;
+    my_tree.balance();
+    my_tree.Fancy_print();
+    
+    
 
-    my_other_tree.balance();
-
-    my_other_tree.Fancy_print();
-    return 0;
 }

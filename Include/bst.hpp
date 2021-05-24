@@ -18,10 +18,10 @@
 */
 
 template <typename KEY_type, typename VAL_type, typename comparison_operator=std::less<KEY_type>>
-class bst{
+class Bst{
 
     comparison_operator op;
-    using node_type = node<const KEY_type,VAL_type>;
+    using node_type = Node<const KEY_type,VAL_type>;
     using pair_type = std::pair<const KEY_type,VAL_type>;
 
     using const_iterator = Iterator<const pair_type,node_type>;
@@ -35,21 +35,21 @@ class bst{
     size_t Tot_nodes = 0; /** number of nodes present in the tree in any moment*/
 
     /**
-     * Default constructor for bst class
+     * Default constructor for Bst class
      * */
 
-    bst() = default;
+    Bst() = default;
 
     /**
-     * Constructor for bst class taking as input a pair 
+     * Constructor for Bst class taking as input a pair 
      * */
-    explicit bst(const pair_type& p){
+    explicit Bst(const pair_type& p){
         root.reset(new node_type(p));
         Tot_nodes = 1;
     }
     
 
-    explicit bst(pair_type&& p){
+    explicit Bst(pair_type&& p){
         root.reset(new node_type(std::move(p)));
         Tot_nodes = 1;
     }
@@ -59,18 +59,18 @@ class bst{
     /**
      * copy constructor 
      * */
-    bst(const bst& bst_to_copy_from){
-        /*copy only the roots, then the full deep copy is performed at node level*/
+    Bst(const Bst& bst_to_copy_from){
+        /*copy only the roots, then the full deep copy is performed at Node level*/
         root.reset(new node_type(bst_to_copy_from.root.get()));
         Tot_nodes = bst_to_copy_from.Tot_nodes;
     }
 
-    ~bst() noexcept = default;
+    ~Bst() noexcept = default;
 
     /**copy assignment
      * 
      * */
-    bst& operator=(const bst& bst_to_copy_from){
+    Bst& operator=(const Bst& bst_to_copy_from){
         root.reset();
         auto tmp = bst_to_copy_from;
         (*this) = std::move(tmp);
@@ -82,16 +82,16 @@ class bst{
     /**move constructor 
      * Since no raw pointers are used, then default is enough
      * */
-    bst(bst&& x) noexcept  = default;
+    Bst(Bst&& x) noexcept  = default;
 
     /**move assignment
      * Since no raw pointers are used, then default is enough
      * */
-    bst &operator=(bst&& x) noexcept = default;
+    Bst &operator=(Bst&& x) noexcept = default;
 
     /**
      * begin iterator relies on the implementation of the iterator
-     * for bst class
+     * for Bst class
      * */
     iterator begin(){
         node_type *current = root.get();
@@ -103,7 +103,7 @@ class bst{
 
     /**
      * end iterator relies on the implementation of the iterator
-     * for bst class
+     * for Bst class
      * */
 
     iterator end(){
@@ -113,7 +113,7 @@ class bst{
 
     /**
      * begin iterator relies on the implementation of the iterator
-     * for bst class
+     * for Bst class
      * */
 
     const_iterator begin() const{
@@ -126,7 +126,7 @@ class bst{
 
      /**
      * begin iterator relies on the implementation of the iterator
-     * for bst class
+     * for Bst class
      * */
 
     const_iterator cbegin() const{
@@ -139,7 +139,7 @@ class bst{
 
      /**
      * end iterator relies on the implementation of the iterator
-     * for bst class
+     * for Bst class
      * */
 
     const_iterator end() const{
@@ -148,7 +148,7 @@ class bst{
 
      /**
      * end iterator relies on the implementation of the iterator
-     * for bst class
+     * for Bst class
      * */
 
     const_iterator cend() const{
@@ -161,7 +161,7 @@ class bst{
      * since the relationships between nodes in the tree
      * are implemented using unique_ptr this destroys recursively 
      * all the nodes in the tree clearing its content.
-     * The number of node in the bst is set to 0
+     * The number of Node in the Bst is set to 0
      * */
     void clear(){
         root.reset();
@@ -202,7 +202,7 @@ class bst{
     /**
      * 
      * Find a given key. If the key is present, 
-     * returns an iterator to the proper node, end() otherwise.
+     * returns an iterator to the proper Node, end() otherwise.
      * */
     iterator find(const KEY_type& x){
         return iterator(_find(x));
@@ -226,13 +226,13 @@ class bst{
         }
         /**
         * if nullptr insert the key and leave the value type uninitialized
-        * extract directly the iterator to the node
+        * extract directly the iterator to the Node
         * set the second as the rhs, actually works if the return is what I want to set
         * note! 
         * 
         * If I call 
         * std::cout << tree[key_not_present] << ...
-        * an insertion is performed without initializing anything, so a new node is created
+        * an insertion is performed without initializing anything, so a new Node is created
         */
         auto new_pair_it = insert(pair_type{x, {} }).first;
         return new_pair_it -> second;
@@ -260,22 +260,23 @@ class bst{
      * pairs stored in order
      * */
     friend
-    std::ostream& operator<<(std::ostream& os, const bst& x){
+    std::ostream& operator<<(std::ostream& os, const Bst& x){
         if(x.root.get() == nullptr){
             os << "Empty tree, please insert some nodes" << std::endl;
             return os;
         }
+        os << "[ ";
         for(const auto& n : x)
         {
-            os << n.first << "  " << n.second << "\n";
+            os << "( " << n.first << " " << n.second << " ) ";
         }
-        os << std::endl;
+        os << "]" << std::endl;
         return os;
     }
 
     /**
      * Rebalancing
-     * relies on the private method, _balancd_insert
+     * relies on the private method, _balancd_insert'
     */
     void balance();
 
@@ -284,11 +285,13 @@ class bst{
      * implementation of a pictorial way to see the tree structure
      * usefull also for debugging, not requested by the exam.
      * The code used is taken from an article on the web and adapted to 
-     * work with this implementation of a bst
+     * work with this implementation of a Bst
+     * 
      * */
     void Fancy_print() 
     { 
-        // Pass initial space count as 0 
+        std::cout << "/!\\ Note: the tree is printed horizontally!" << std::endl;
+        // Pass initial space count as 0  
         print2DUtil(root.get(), 0); 
     } 
 
@@ -320,7 +323,7 @@ class bst{
      * implementation of a pictorial way to see the tree structure
      * usefull also for debugging, not requested by the exam.
      * The code used is taken from an article on the web and adapted to 
-     * work with this implementation of a bst
+     * work with this implementation of a Bst
      * */
     void print2DUtil(node_type *root, int space) 
     { 
@@ -333,7 +336,7 @@ class bst{
         // Process right child first 
         print2DUtil(root->get_right(), space); 
     
-        // Print current node after space 
+        // Print current Node after space 
         // count 
         std::cout<<std::endl; 
         for (int i = COUNT; i < space; i++) 
@@ -348,7 +351,7 @@ class bst{
    /**
     * Auxiliary function to insert the median of an array of KV pairs
     * At each step inserting the median of a sorted array makes sure that
-    * the resulting bst will be balanced
+    * the resulting Bst will be balanced
     * */
     void _balanced_insert(std::vector<pair_type>& v, size_t first, size_t last);
     };
@@ -356,8 +359,8 @@ class bst{
 
 template <typename KEY_type, typename VAL_type, typename comparison_operator>
 template<typename O>
-std::pair<typename bst<KEY_type,VAL_type,comparison_operator>::iterator,bool> 
-bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
+std::pair<typename Bst<KEY_type,VAL_type,comparison_operator>::iterator,bool> 
+Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         {
         Tot_nodes = Tot_nodes + 1;
         auto node_to_insert = new node_type(std::forward<O>(pair_to_insert));
@@ -368,6 +371,9 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         else{
             auto curr_node = root.get();
             while(true){
+                if( node_to_insert -> get_key() == curr_node -> get_key()){
+                    return std::pair<iterator,bool>{curr_node,false};
+                }
                 if(!op(node_to_insert -> get_key(),curr_node -> get_key())){
                     if(curr_node -> get_right() == nullptr){
                         curr_node -> set_right(node_to_insert);
@@ -383,7 +389,7 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
                     curr_node = curr_node -> get_left();
                 }
                 else{
-                    return std::pair<iterator,bool>{curr_node,false};
+                    continue;
                 }
 
             }
@@ -393,8 +399,8 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
 
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
     template <typename O>
-    typename bst<KEY_type,VAL_type,comparison_operator>::node_type* 
-    bst<KEY_type,VAL_type,comparison_operator>::_find (O&& KEY){
+    typename Bst<KEY_type,VAL_type,comparison_operator>::node_type* 
+    Bst<KEY_type,VAL_type,comparison_operator>::_find (O&& KEY){
         auto current = root.get();
         while(current){
             if(KEY == current -> get_key()){
@@ -423,7 +429,7 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
 
 
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
-    void bst<KEY_type,VAL_type,comparison_operator>::balance() {
+    void Bst<KEY_type,VAL_type,comparison_operator>::balance() {
         // initialize a vector of nodes
         std::vector<pair_type> v;
         // get the iterators pointing to the first and last element of the tree
@@ -446,9 +452,9 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
     }
 
 
-// build a balanced tree from an vector of node
+// build a balanced tree from an vector of Node
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
-    void bst<KEY_type,VAL_type,comparison_operator>::_balanced_insert(std::vector<pair_type>& v, size_t first, size_t last) {
+    void Bst<KEY_type,VAL_type,comparison_operator>::_balanced_insert(std::vector<pair_type>& v, size_t first, size_t last) {
 
         if (first == last) {
             return;
@@ -463,8 +469,8 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
     
     /*
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
-    typename bst<KEY_type,VAL_type,comparison_operator>::node_type* 
-    bst<KEY_type,VAL_type,comparison_operator>::copy_all_nodes(bst<KEY_type,VAL_type,comparison_operator>::node_type* current_node){
+    typename Bst<KEY_type,VAL_type,comparison_operator>::node_type* 
+    Bst<KEY_type,VAL_type,comparison_operator>::copy_all_nodes(Bst<KEY_type,VAL_type,comparison_operator>::node_type* current_node){
         auto copied_node = new node_type(*current_node);
         if (current_node -> get_left() != nullptr) { 
             //copy recursively child

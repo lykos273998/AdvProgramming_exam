@@ -8,57 +8,57 @@
 
 
 template <typename KEY_type, typename VAL_type>
-struct node
+struct Node
     {
         /*
-        * struct node that contains a pair - Key value
-        * pointer to left, right child as unique_ptr and parent node as raw ptr
+        * struct Node that contains a pair - Key value
+        * pointer to left, right child as unique_ptr and parent Node as raw ptr
         *    
         */
         using pair_type = std::pair<KEY_type,VAL_type>;
         pair_type KV;
-        std::unique_ptr<node> LEFT_child{nullptr}; 
-        std::unique_ptr<node> RIGHT_child{nullptr};
-        node* parent{nullptr};
+        std::unique_ptr<Node> LEFT_child{nullptr}; 
+        std::unique_ptr<Node> RIGHT_child{nullptr};
+        Node* parent{nullptr};
         
-        /**node constructor from a l-value reference to a type pair*/
-        explicit node(const pair_type& KV_init) noexcept : KV{KV_init} {
+        /**Node constructor from a l-value reference to a type pair*/
+        explicit Node(const pair_type& KV_init) noexcept : KV{KV_init} {
         };
 
-        /**node constructor from a r-value reference to a type pair*/
-        explicit node(pair_type&& KV_init) noexcept : KV{std::move(KV_init)} {
-           // std::cout << "r-val node ctor" << std::endl;
+        /**Node constructor from a r-value reference to a type pair*/
+        explicit Node(pair_type&& KV_init) noexcept : KV{std::move(KV_init)} {
+           // std::cout << "r-val Node ctor" << std::endl;
         };
 
         /**
-        * copy constructor using a pointer to a node as input
+        * copy constructor using a pointer to a Node as input
         * deep copy of the tree is performed at this level
-        * each node once copied, copies all its childs recursively
+        * each Node once copied, copies all its childs recursively
         * So by invoking the cop of the root the whole tree is copied
         */
-        node(const node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
+        Node(const Node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
             if(node_to_copy_from -> get_left()){
-                set_left(new node(node_to_copy_from -> get_left()));
+                set_left(new Node(node_to_copy_from -> get_left()));
             }
             if(node_to_copy_from -> get_right()){
-                set_right(new node(node_to_copy_from -> get_right()));
+                set_right(new Node(node_to_copy_from -> get_right()));
             }
         }
 
         /**
-        * copy constructor using a const node refernce as input
+        * copy constructor using a const Node refernce as input
         * deep copy of the tree is performed at this level
-        * each node once copied, copies all its childs recursively
+        * each Node once copied, copies all its childs recursively
         * So by invoking the cop of the root the whole tree is copied
         */
-        node(const node &node_to_copy_from) : node{&node_to_copy_from}  {     
+        Node(const Node &node_to_copy_from) : Node{&node_to_copy_from}  {     
            
             }
 
         /**
          * copy assignment, uses copy constructor
          * */
-        node& operator=(const node& node_to_copy_from){
+        Node& operator=(const Node& node_to_copy_from){
             LEFT_child.reset();
             RIGHT_child.reset();
             auto tmp{node_to_copy_from};
@@ -66,56 +66,56 @@ struct node
             return *this;
             }
         /**default destuctor*/
-        ~node() noexcept = default;
+        ~Node() noexcept = default;
 
         /**default move constructor*/
-        node(node &&) noexcept = default;
+        Node(Node &&) noexcept = default;
         /**default move assignment*/
-        node &operator=(node &&) noexcept = default;
+        Node &operator=(Node &&) noexcept = default;
         
 
-        /**returns pointer to parent of the node*/
-        node* get_parent(){
+        /**returns pointer to parent of the Node*/
+        Node* get_parent(){
             return parent;
         }
-        /**sets parent of the node*/
-        void set_parent(node* other_node){
+        /**sets parent of the Node*/
+        void set_parent(Node* other_node){
             parent = other_node;
         }
 
-        /**returns the KEY of the node*/
+        /**returns the KEY of the Node*/
         KEY_type get_key(){
             return KV.first;
         }
-        /**returns the value of the node*/
+        /**returns the value of the Node*/
         VAL_type get_val(){
             return KV.second;
         }
-        /**returns the pair of the node*/
+        /**returns the pair of the Node*/
         pair_type& get_pair(){
             return KV;
         }
 
         /**returns a raw ptr to the left child*/
-        node* get_left() const {
+        Node* get_left() const {
             return LEFT_child.get();
         }
         /**sets the left child unique_ptr, taking as input a raw ptr
          * set as partent of the other_node the actual one
         */
-        void set_left(node* other_node){
+        void set_left(Node* other_node){
             LEFT_child.reset(other_node);
             other_node -> set_parent(this);
         }
         /**returns a raw ptr to the right child*/
-        node* get_right() const {
+        Node* get_right() const {
             return RIGHT_child.get();
         }
 
         /**sets the rightchild unique_ptr, taking as input a raw ptr
          * set as partent of the other_node the actual one
         */
-        void set_right(node* other_node){
+        void set_right(Node* other_node){
             RIGHT_child.reset(other_node);
             other_node -> set_parent(this);
         }
