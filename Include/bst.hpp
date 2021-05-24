@@ -274,6 +274,13 @@ class bst{
     }
 
     /**
+     * Rebalancing
+     * relies on the private method, _balancd_insert
+    */
+    void balance();
+
+
+    /**
      * implementation of a pictorial way to see the tree structure
      * usefull also for debugging, not requested by the exam.
      * The code used is taken from an article on the web and adapted to 
@@ -338,7 +345,12 @@ class bst{
    
         } 
    
-    
+   /**
+    * Auxiliary function to insert the median of an array of KV pairs
+    * At each step inserting the median of a sorted array makes sure that
+    * the resulting bst will be balanced
+    * */
+    void _balanced_insert(std::vector<pair_type>& v, size_t first, size_t last);
     };
 
 
@@ -410,7 +422,43 @@ bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
     }
 
 
-    
+    template <typename KEY_type, typename VAL_type, typename comparison_operator>
+    void bst<KEY_type,VAL_type,comparison_operator>::balance() {
+        // initialize a vector of nodes
+        std::vector<pair_type> v;
+        // get the iterators pointing to the first and last element of the tree
+        iterator first{this->begin()};
+        iterator last{this->end()};
+        // it they coincide, the tree is empty, so no need to balance
+        if(first==last)
+            return;
+        // populate the vectors with all the nodes of the tree
+        while(first!=last) {
+            v.push_back(*first);
+            ++first;
+        }
+
+        // clear the tree
+        clear();
+        // create from the vector a new balanced tree
+        _balanced_insert(v, 0, v.size());
+
+    }
+
+
+// build a balanced tree from an vector of node
+    template <typename KEY_type, typename VAL_type, typename comparison_operator>
+    void bst<KEY_type,VAL_type,comparison_operator>::_balanced_insert(std::vector<pair_type>& v, size_t first, size_t last) {
+
+        if (first == last) {
+            return;
+        }
+            size_t middle = (first+last)/2;
+            insert(v[middle]);
+            _balanced_insert(v, first, middle);
+            _balanced_insert(v, middle+1, last);
+
+        }
 
     
     /*

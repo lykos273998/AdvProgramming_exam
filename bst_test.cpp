@@ -53,7 +53,7 @@ int main(){
     std::cout << my_tree << std::endl;
     std::cout << my_other_tree << std::endl;
 
-    my_tree.Fancy_print();
+   // my_tree.Fancy_print();
 
     //bst<int,int> ttest = bst<int,int>{};
     //std::cout << (*(my_tree.find(7))).first <<std::endl;
@@ -73,6 +73,20 @@ int main(){
     ttest.Fancy_print();*/
 
    // std::cout << ttest << std::endl;
+   // my_tree.balance();
 
+    //my_tree.Fancy_print();
+
+    my_other_tree.clear();
+
+    for(int i = 0; i<10; ++i){
+        my_other_tree.insert(pair{i,0});
+    }
+
+    my_other_tree.Fancy_print();
+
+    my_other_tree.balance();
+
+    my_other_tree.Fancy_print();
     return 0;
 }
