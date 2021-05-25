@@ -485,24 +485,6 @@ Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
 
         }
 
-    
-    /*
-    template <typename KEY_type, typename VAL_type, typename comparison_operator>
-    typename Bst<KEY_type,VAL_type,comparison_operator>::node_type* 
-    Bst<KEY_type,VAL_type,comparison_operator>::copy_all_nodes(Bst<KEY_type,VAL_type,comparison_operator>::node_type* current_node){
-        auto copied_node = new node_type(*current_node);
-        if (current_node -> get_left() != nullptr) { 
-            //copy recursively child
-            //and set recursively the parenthood, parent is a raw pointer, only for auxiliary things
-            copied_node -> set_left(copy_all_nodes(current_node -> get_left()));
-            
-            }
-        if (current_node -> get_right() != nullptr){
-            copied_node -> set_right(copy_all_nodes(current_node -> get_right()));
-            }
-        return copied_node;
-    }
-*/
 
 template <typename KEY_type, typename VAL_type, typename comparison_operator>
 void Bst<KEY_type,VAL_type,comparison_operator>::erase(const KEY_type& x){
@@ -535,7 +517,7 @@ void Bst<KEY_type,VAL_type,comparison_operator>::erase(const KEY_type& x){
         if(left_child){
             _aux_erase(left_child);
         }
-        std::cout << "Sceesfully eliminated key "<< x << std::endl;
+        std::cout << "Successfully eliminated key "<< x << std::endl;
         
     }
 }

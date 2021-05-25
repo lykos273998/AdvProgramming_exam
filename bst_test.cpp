@@ -100,7 +100,7 @@ int main(){
     my_tree.Fancy_print();
 
     std::cout << "Erasing a node from the tree and checking if the node traversal order is preserved" << std::endl;
-    my_tree.erase(0);
+    my_tree.erase(4);
     std::cout << my_tree << std::endl;
 
     my_tree.Fancy_print();
