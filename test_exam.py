@@ -1,5 +1,17 @@
 def reverse_dict(d):
-    pass
+    values = set()
+    [values.update(i) for i in d.values()]
+    #print(values)
+
+    rd = {v: [] for v in values}
+
+    for value in values:
+        for k,v in d.items():
+            if value in v:
+                rd[value].append(k)
+    return rd
+
+
 
 
 def test_reverse_small_dict():
