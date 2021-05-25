@@ -280,6 +280,15 @@ class Bst{
     */
     void balance();
 
+    /**
+    * Erase method, erases a node from the bst, given the key
+    * To erase a node saves its descendents subtrees (if present)
+    * and then reinserts all the nodes in its descendance, preserving
+    * original bst traversing order.
+    * 
+    */
+    void erase(const KEY_type& x);
+
 
     /**
      * implementation of a pictorial way to see the tree structure
@@ -354,7 +363,17 @@ class Bst{
     * the resulting Bst will be balanced
     * */
     void _balanced_insert(std::vector<pair_type>& v, size_t first, size_t last);
+
+
+    /**
+     * Auxiliary function to insert the subtree starting from a node into the tree
+     * Usefull to rebuilt the missing parts of the bst after erasing a node
+    *
+    */
+    void _aux_erase(node_type* curr);
     };
+
+
 
 
 template <typename KEY_type, typename VAL_type, typename comparison_operator>
@@ -484,3 +503,52 @@ Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         return copied_node;
     }
 */
+
+template <typename KEY_type, typename VAL_type, typename comparison_operator>
+void Bst<KEY_type,VAL_type,comparison_operator>::erase(const KEY_type& x){
+    auto node_itr = find(x);
+    if(node_itr == end()){
+        std::cout << "there's no matching key" << std::endl;
+        return;
+    }
+    else{
+        node_type* curr = node_itr.current;
+        node_type* parent = curr -> parent;
+        node_type* right_child = curr -> RIGHT_child.release();
+        node_type* left_child = curr -> LEFT_child.release();
+        /*if parent is nullptr it is the root*/
+        if(parent){
+            if(parent -> get_left() == curr){
+                parent->LEFT_child.reset();
+            }
+            else{
+                parent->RIGHT_child.reset();
+            }
+        }
+        else{
+            clear();
+        }
+
+        if(right_child) {
+            _aux_erase(right_child);
+        }   
+        if(left_child){
+            _aux_erase(left_child);
+        }
+        std::cout << "Sceesfully eliminated key "<< x << std::endl;
+        
+    }
+}
+
+
+
+template <typename KEY_type, typename VAL_type, typename comparison_operator>
+void Bst<KEY_type,VAL_type,comparison_operator>::_aux_erase(node_type* curr){
+    insert(curr -> get_pair());
+    if(curr -> get_right()) {
+        _aux_erase(curr -> get_right());
+    }   
+    if(curr -> get_left()) {
+        _aux_erase(curr -> get_left());
+    }    
+}

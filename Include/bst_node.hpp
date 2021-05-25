@@ -120,7 +120,6 @@ struct Node
             other_node -> set_parent(this);
         }
 
-        
         };
         
     

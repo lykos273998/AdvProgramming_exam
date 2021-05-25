@@ -90,7 +90,7 @@ int main(){
     */
     my_tree.clear();
     std::cout << "\nNow building an unbalanced tree and printing it" << std::endl;
-    for(int i = -6 ; i<10; ++i){
+    for(int i = 0; i<10; ++i){
         my_tree.emplace(i,0);
     }
     my_tree.Fancy_print();
@@ -98,7 +98,11 @@ int main(){
     std::cout << "\nRebalancing and printing the tree" << std::endl;
     my_tree.balance();
     my_tree.Fancy_print();
-    
-    
+
+    std::cout << "Erasing a node from the tree and checking if the node traversal order is preserved" << std::endl;
+    my_tree.erase(0);
+    std::cout << my_tree << std::endl;
+
+    my_tree.Fancy_print();
 
 }
