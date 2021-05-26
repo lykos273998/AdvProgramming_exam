@@ -42,7 +42,7 @@ int main(){
     
 
     auto succesfull_insertion = my_tree.insert(n14);
-    auto failed_insertion = my_tree.insert(n14);
+    auto failed_insertion = my_tree.emplace(14,120);
 
     std::cout << "first time inserting a node with 14 as KEY: " << (succesfull_insertion.second ? "true" : "false") << std::endl;
     std::cout << "second time inserting a node with 14 as KEY: " << (failed_insertion.second ? "true" : "false") << std::endl;
@@ -104,5 +104,17 @@ int main(){
     std::cout << my_tree << std::endl;
 
     my_tree.Fancy_print();
+
+    std::cout << "Now generating another tree by copying the original one and modifying it to see if they are unlinked" << std::endl;
+
+    Bst<int,int> another_tree{my_tree};
+
+    another_tree.emplace(1000,0);
+    another_tree.erase(0);
+    another_tree.erase(2);
+    another_tree.erase(3);
+
+    std::cout << "original one " << my_tree << std::endl;
+    std::cout << "(deep) copied and modified tree" << another_tree << std::endl;
 
 }
