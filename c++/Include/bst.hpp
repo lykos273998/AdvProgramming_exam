@@ -367,7 +367,8 @@ class Bst{
 
     /**
      * Auxiliary function to insert the subtree starting from a node into the tree
-     * Usefull to rebuilt the missing parts of the bst after erasing a node
+     * Rebuild the missing parts of the bst after erasing a node, in particular, reinserts 
+     * a sub tree into the tree
     *
     */
     void _aux_erase(node_type* curr);
