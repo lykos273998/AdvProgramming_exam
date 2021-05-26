@@ -382,27 +382,28 @@ std::pair<typename Bst<KEY_type,VAL_type,comparison_operator>::iterator,bool>
 Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         {
         Tot_nodes = Tot_nodes + 1;
-        auto node_to_insert = new node_type(std::forward<O>(pair_to_insert));
+        auto node_to_insert = node_type(std::forward<O>(pair_to_insert));
         if(root.get() == nullptr){
-            root.reset(node_to_insert);
+            root.reset(new node_type(std::forward<O>(pair_to_insert)));
             return std::pair<iterator,bool>(iterator(root.get()),true);
         }
         else{
             auto curr_node = root.get();
             while(true){
-                if( node_to_insert -> get_key() == curr_node -> get_key()){
+                if( node_to_insert.get_key() == curr_node -> get_key()){
+                    //delete[] node_to_insert;
                     return std::pair<iterator,bool>{curr_node,false};
                 }
-                if(!op(node_to_insert -> get_key(),curr_node -> get_key())){
+                if(!op(node_to_insert.get_key(),curr_node -> get_key())){
                     if(curr_node -> get_right() == nullptr){
-                        curr_node -> set_right(node_to_insert);
+                        curr_node -> set_right(new node_type(std::forward<O>(pair_to_insert)));
                         return std::pair<iterator,bool>{curr_node -> get_right(),true};
                     }
                     curr_node = curr_node -> get_right();
                 }
-                else if(op(node_to_insert -> get_key(),curr_node -> get_key())){
+                else if(op(node_to_insert.get_key(),curr_node -> get_key())){
                     if(curr_node -> get_left() == nullptr){
-                        curr_node -> set_left(node_to_insert);
+                        curr_node -> set_left(new node_type(std::forward<O>(pair_to_insert)));
                         return std::pair<iterator,bool>{curr_node -> get_left(),true};
                     }
                     curr_node = curr_node -> get_left();
@@ -496,27 +497,30 @@ void Bst<KEY_type,VAL_type,comparison_operator>::erase(const KEY_type& x){
     else{
         node_type* curr = node_itr.current;
         node_type* parent = curr -> parent;
-        node_type* right_child = curr -> RIGHT_child.release();
-        node_type* left_child = curr -> LEFT_child.release();
+        std::unique_ptr<node_type> right_child{curr -> RIGHT_child.release()};
+        std::unique_ptr<node_type>  left_child{ curr -> LEFT_child.release()};
         /*if parent is nullptr it is the root*/
         if(parent){
             if(parent -> get_left() == curr){
-                parent->LEFT_child.reset();
+                parent->LEFT_child.reset(nullptr);
             }
             else{
-                parent->RIGHT_child.reset();
+                parent->RIGHT_child.reset(nullptr);
             }
         }
         else{
             clear();
         }
 
-        if(right_child) {
-            _aux_erase(right_child);
+        if(right_child.get()) {
+            _aux_erase(right_child.get());
+            
         }   
-        if(left_child){
-            _aux_erase(left_child);
+        if(left_child.get()){
+            _aux_erase(left_child.get());
+           
         }
+        
         std::cout << "Successfully eliminated key "<< x << std::endl;
         
     }
@@ -529,8 +533,11 @@ void Bst<KEY_type,VAL_type,comparison_operator>::_aux_erase(node_type* curr){
     insert(curr -> get_pair());
     if(curr -> get_right()) {
         _aux_erase(curr -> get_right());
+        curr -> RIGHT_child.reset();
+
     }   
     if(curr -> get_left()) {
         _aux_erase(curr -> get_left());
+        curr -> LEFT_child.reset();
     }    
 }

@@ -42,7 +42,7 @@ int main(){
     
 
     auto succesfull_insertion = my_tree.insert(n14);
-    auto failed_insertion = my_tree.emplace(14,110);
+    auto failed_insertion = my_tree.insert(n14);
 
     std::cout << "first time inserting a node with 14 as KEY: " << (succesfull_insertion.second ? "true" : "false") << std::endl;
     std::cout << "second time inserting a node with 14 as KEY: " << (failed_insertion.second ? "true" : "false") << std::endl;
