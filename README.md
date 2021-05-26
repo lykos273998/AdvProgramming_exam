@@ -1,5 +1,6 @@
 # ADV Programming project
-**Group** :Marianna Corsano, Francesco Tomba, Samuele Maria Semi
+**Group** : Marianna Corsano, Francesco Tomba, Samuele Maria Semi
+
 Git repository for the *Advanced Programming Exam* @ University of Trieste, AY 2020/21
 
 ## Project Description
