@@ -42,6 +42,12 @@ struct Iterator{
             return *this;
         }
 
+        Iterator& operator++(int){
+            auto tmp{*this};
+            ++(*this);
+            return tmp;
+        }
+
         /**overloading of == operator*/
         friend bool operator== (const Iterator& a, const Iterator& b) { return a.current == b.current; };
         /**overloading of != operator*/
