@@ -10,6 +10,6 @@ The `c++` part consist in the implementation of a BST and the `python` one in an
 ## Compile and run
 For the `c++` part it comes with a makefile which compiles `bst_test.cpp` a simple file that performs some tests on the implementation, if you want to compile by yourself use:
 ```makefile
-g++ bst_test.cpp -o bst.x -I Include -Wall -Wextra
+g++ bst_test.cpp -I Include -Wall -Wextra -o [executable name]
 ```
 The `python` part comes in a jupyter notebook, for further testing it needs `pytest` package.
