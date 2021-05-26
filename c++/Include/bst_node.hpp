@@ -21,6 +21,7 @@ struct Node
         std::unique_ptr<Node> RIGHT_child{nullptr};
         Node* parent{nullptr};
         
+        Node(){};
         /**Node constructor from a l-value reference to a type pair*/
         explicit Node(const pair_type& KV_init) noexcept : KV{KV_init} {
         };
@@ -65,6 +66,7 @@ struct Node
             *this = std::move(tmp);
             return *this;
             }
+        
         /**default destuctor*/
         ~Node() noexcept = default;
 
