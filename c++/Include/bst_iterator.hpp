@@ -37,12 +37,12 @@ struct Iterator{
         ~Iterator() = default;
 
         /** ++ operator overloading, relies on next() method */
-        Iterator& operator++(){
+        Iterator& operator++() noexcept{
             current = next();
             return *this;
         }
 
-        Iterator& operator++(int){
+        Iterator& operator++(int) noexcept{
             auto tmp{*this};
             ++(*this);
             return tmp;

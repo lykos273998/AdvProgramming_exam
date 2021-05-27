@@ -31,14 +31,14 @@ class Bst{
 
     public:
 
-    std::unique_ptr<node_type> root{nullptr}; /** unique_ptr pointing to the root of the tree*/
-    size_t Tot_nodes = 0; /** number of nodes present in the tree in any moment*/
+    std::unique_ptr<node_type> root; /** unique_ptr pointing to the root of the tree*/
+    size_t Tot_nodes ; /** number of nodes present in the tree in any moment*/
 
     /**
      * Default constructor for Bst class
      * */
 
-    Bst() = default;
+    Bst() : root{nullptr}, Tot_nodes{0} {};
 
     /**
      * Constructor for Bst class taking as input a pair 
@@ -163,7 +163,7 @@ class Bst{
      * all the nodes in the tree clearing its content.
      * The number of Node in the Bst is set to 0
      * */
-    void clear(){
+    void clear() noexcept{
         root.reset();
         Tot_nodes = 0;
     }
@@ -204,10 +204,10 @@ class Bst{
      * Find a given key. If the key is present, 
      * returns an iterator to the proper Node, end() otherwise.
      * */
-    iterator find(const KEY_type& x){
+    iterator find(const KEY_type& x) noexcept{
         return iterator(_find(x));
     }
-    const_iterator find(const KEY_type& x) const{
+    const_iterator find(const KEY_type& x) const noexcept{
         return const_iterator(_find(x));
     }
 
@@ -297,7 +297,7 @@ class Bst{
      * work with this implementation of a Bst
      * 
      * */
-    void Fancy_print() 
+    void Fancy_print() const noexcept
     { 
         std::cout << "/!\\ Note: the tree is printed horizontally!" << std::endl;
         // Pass initial space count as 0  
@@ -323,7 +323,7 @@ class Bst{
      * on linked lists
      * */
     template<typename O>
-    node_type* _find(O&& KEY);
+    node_type* _find(O&& KEY) const noexcept;
 
 
     
@@ -334,7 +334,7 @@ class Bst{
      * The code used is taken from an article on the web and adapted to 
      * work with this implementation of a Bst
      * */
-    void print2DUtil(node_type *root, int space) 
+    void print2DUtil(node_type *root, int space) const noexcept
     { 
         if (root == nullptr) 
             return; 
@@ -421,7 +421,7 @@ Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
     template <typename KEY_type, typename VAL_type, typename comparison_operator>
     template <typename O>
     typename Bst<KEY_type,VAL_type,comparison_operator>::node_type* 
-    Bst<KEY_type,VAL_type,comparison_operator>::_find (O&& KEY){
+    Bst<KEY_type,VAL_type,comparison_operator>::_find (O&& KEY) const noexcept{
         auto current = root.get();
         while(current){
             if(KEY == current -> get_key()){
