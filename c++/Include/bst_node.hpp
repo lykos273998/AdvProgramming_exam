@@ -23,13 +23,10 @@ struct Node
         
         Node(){};
         /**Node constructor from a l-value reference to a type pair*/
-        explicit Node(const pair_type& KV_init) noexcept : KV{KV_init}, LEFT_child{nullptr}, RIGHT_child{nullptr}, parent{nullptr}{
-        };
+        explicit Node(const pair_type& KV_init) : KV{KV_init}, LEFT_child{nullptr}, RIGHT_child{nullptr}, parent{nullptr}{};
  
         /**Node constructor from a r-value reference to a type pair*/
-        explicit Node(pair_type&& KV_init) noexcept : KV{std::move(KV_init)}, LEFT_child{nullptr}, RIGHT_child{nullptr}, parent{nullptr} {
-           // std::cout << "r-val Node ctor" << std::endl;
-        };
+        explicit Node(pair_type&& KV_init) noexcept : KV{std::move(KV_init)}, LEFT_child{nullptr}, RIGHT_child{nullptr}, parent{nullptr} {};
 
         /**
         * copy constructor using a pointer to a Node as input
