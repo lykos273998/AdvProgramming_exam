@@ -34,7 +34,7 @@ struct Node
         * each Node once copied, copies all its childs recursively
         * So by invoking the cop of the root the whole tree is copied
         */
-        explicit Node(const Node* node_to_copy_from) : KV{node_to_copy_from -> KV}{
+        explicit Node(const Node* node_to_copy_from) : KV{node_to_copy_from -> KV}, parent{nullptr} {
             if(node_to_copy_from -> get_left()){
                 set_left(new Node(node_to_copy_from -> get_left()));
             }

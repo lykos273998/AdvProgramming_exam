@@ -84,6 +84,8 @@ int main(){
     std::cout << "Retriving a value through find method \n";
     std::cout << "searching for KEY 13 expecting VALUE 131313 \n";
     std::cout << (*(my_tree.find(13))).second << std::endl;
+    //const auto gg = my_tree.find(13);
+    //std::cout << (*gg).second << std::endl;
 
     /**
      * clearing the tree to do further tests
@@ -107,14 +109,14 @@ int main(){
 
     std::cout << "Now generating another tree by copying the original one and modifying it to see if they are unlinked" << std::endl;
 
-    Bst<int,int> another_tree{my_tree};
+    Bst<int,int> another_tree = my_tree;
 
-    another_tree.emplace(1000,0);
-    another_tree.erase(0);
-    another_tree.erase(2);
-    another_tree.erase(3);
+    //another_tree.emplace(1000,0);
+    //another_tree.erase(0);
+    //another_tree.erase(2);
+   // another_tree.erase(3);
 
-    std::cout << "original one " << my_tree << std::endl;
+    //std::cout << "original one " << my_tree << std::endl;
     std::cout << "(deep) copied and modified tree" << another_tree << std::endl;
-
+    another_tree.Fancy_print();
 }

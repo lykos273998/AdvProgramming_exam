@@ -204,11 +204,11 @@ class Bst{
      * Find a given key. If the key is present, 
      * returns an iterator to the proper Node, end() otherwise.
      * */
-    iterator find(const KEY_type& x) noexcept{
-        return iterator(_find(x));
+    iterator find(const KEY_type& x){
+        return iterator{_find(x)};
     }
-    const_iterator find(const KEY_type& x) const noexcept{
-        return const_iterator(_find(x));
+    const_iterator find(const KEY_type& x) const{
+        return const_iterator{_find(x)};
     }
 
     /**
