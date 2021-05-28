@@ -14,13 +14,12 @@
  * BST implementation, templated on the KEY type, the VALUE type and the 
  * COMPARISON operator between key values
  * 
- * 
 */
 
 template <typename KEY_type, typename VAL_type, typename comparison_operator=std::less<KEY_type>>
 class Bst{
 
-    comparison_operator op;
+    
     using node_type = Node<const KEY_type,VAL_type>;
     using pair_type = std::pair<const KEY_type,VAL_type>;
 
@@ -63,6 +62,7 @@ class Bst{
         /*copy only the roots, then the full deep copy is performed at Node level*/
         root.reset(new node_type(bst_to_copy_from.root.get()));
         Tot_nodes = bst_to_copy_from.Tot_nodes;
+        
     }
 
     ~Bst() noexcept = default;
@@ -308,6 +308,9 @@ class Bst{
 
     private:
 
+    /*comparison operator*/
+    comparison_operator op;
+
 
     /**
      * private insertion method, uses universal forwarding reference to 
@@ -383,7 +386,7 @@ std::pair<typename Bst<KEY_type,VAL_type,comparison_operator>::iterator,bool>
 Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         {
         Tot_nodes = Tot_nodes + 1;
-        auto node_to_insert = node_type(std::forward<O>(pair_to_insert));
+        auto key_to_insert = pair_to_insert.first;
         if(root.get() == nullptr){
             root.reset(new node_type(std::forward<O>(pair_to_insert)));
             return std::pair<iterator,bool>(iterator(root.get()),true);
@@ -391,18 +394,18 @@ Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
         else{
             auto curr_node = root.get();
             while(true){
-                if( node_to_insert.get_key() == curr_node -> get_key()){
+                if( key_to_insert == curr_node -> get_key()){
                     //delete[] node_to_insert;
                     return std::pair<iterator,bool>{curr_node,false};
                 }
-                if(!op(node_to_insert.get_key(),curr_node -> get_key())){
+                if(!op(key_to_insert,curr_node -> get_key())){
                     if(curr_node -> get_right() == nullptr){
                         curr_node -> set_right(new node_type(std::forward<O>(pair_to_insert)));
                         return std::pair<iterator,bool>{curr_node -> get_right(),true};
                     }
                     curr_node = curr_node -> get_right();
                 }
-                else if(op(node_to_insert.get_key(),curr_node -> get_key())){
+                else if(op(key_to_insert,curr_node -> get_key())){
                     if(curr_node -> get_left() == nullptr){
                         curr_node -> set_left(new node_type(std::forward<O>(pair_to_insert)));
                         return std::pair<iterator,bool>{curr_node -> get_left(),true};

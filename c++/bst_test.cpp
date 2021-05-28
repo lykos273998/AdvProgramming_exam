@@ -27,7 +27,7 @@ int main(){
     /*
     * Initializing an empty bst, using int as types  for Key and Values
     */
-    auto my_tree = Bst<int,int>{};
+    auto my_tree = Bst<int,int, std::greater<int>>{};
 
     /**
      * Inseriting the previoulsy generated pairs in the tree
@@ -109,12 +109,12 @@ int main(){
 
     std::cout << "Now generating another tree by copying the original one and modifying it to see if they are unlinked" << std::endl;
 
-    Bst<int,int> another_tree{my_tree};
+    Bst<int,int, std::greater<int>> another_tree{my_tree};
 
     another_tree.emplace(1000,0);
     another_tree.erase(0);
     another_tree.erase(2);
-    another_tree.erase(3);
+    another_tree.erase(5);
 
     std::cout << "original one " << my_tree << std::endl;
     std::cout << "(deep) copied and modified tree" << another_tree << std::endl;
