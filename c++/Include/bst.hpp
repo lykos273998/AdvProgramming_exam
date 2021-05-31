@@ -375,6 +375,7 @@ class Bst{
     *
     */
     void _aux_erase(node_type* curr);
+    
     };
 
 
@@ -395,7 +396,7 @@ Bst<KEY_type,VAL_type,comparison_operator>::_insert_node(O&& pair_to_insert)
             auto curr_node = root.get();
             while(true){
                 if( key_to_insert == curr_node -> get_key()){
-                    //delete[] node_to_insert;
+                    
                     return std::pair<iterator,bool>{curr_node,false};
                 }
                 if(!op(key_to_insert,curr_node -> get_key())){
